@@ -1,0 +1,28 @@
+.cursor-follower {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, rgba(255, 215, 0, 0.4) 0%, rgba(255, 183, 0, 0.2) 50%, transparent 70%);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    pointer-events: none;
+    z-index: 9999;
+    transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+    will-change: transform;
+    backdrop-filter: blur(2px);
+}
+
+.cursor-follower.hover {
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle at center, rgba(255, 215, 0, 0.6) 0%, rgba(255, 183, 0, 0.3) 50%, transparent 70%);
+    border-color: rgba(255, 215, 0, 0.6);
+}
+
+@media (max-width: 768px) {
+    .cursor-follower {
+        display: none;
+    }
+}

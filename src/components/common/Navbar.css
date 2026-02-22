@@ -1,0 +1,294 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: var(--nav-height);
+    background: transparent;
+    transition: all 0.4s ease;
+}
+
+.navbar--scrolled {
+    background: rgba(11, 11, 11, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 215, 0, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+.light-mode .navbar--scrolled {
+    background: rgba(255, 255, 255, 0.85);
+    border-bottom-color: rgba(212, 175, 55, 0.15);
+}
+
+.navbar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 32px;
+    gap: 24px;
+}
+
+/* Logo */
+.navbar__logo {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    text-decoration: none;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.logo-text {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.logo-text--white {
+    color: var(--text-primary);
+}
+
+.logo-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--gold-gradient);
+    border-radius: 50%;
+    position: absolute;
+    bottom: 4px;
+    right: -8px;
+    animation: pulse-gold 2s ease infinite;
+}
+
+/* Center Links */
+.navbar__links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    justify-content: center;
+}
+
+.nav-link {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all var(--transition);
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-link--active {
+    color: var(--gold-primary);
+    background: rgba(255, 215, 0, 0.08);
+}
+
+/* Search Bar */
+.navbar__search {
+    flex: 1;
+    max-width: 480px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--text-muted);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 16px 10px 42px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    transition: all var(--transition);
+}
+
+.search-input:focus {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(255, 215, 0, 0.4);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+}
+
+.search-input::placeholder {
+    color: var(--text-muted);
+}
+
+.light-mode .search-input {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #111;
+}
+
+/* Actions */
+.navbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.theme-toggle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition);
+    cursor: pointer;
+}
+
+.theme-toggle:hover {
+    color: var(--gold-primary);
+    border-color: rgba(255, 215, 0, 0.3);
+    background: rgba(255, 215, 0, 0.05);
+}
+
+.user-avatar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 4px 12px 4px 4px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all var(--transition);
+}
+
+.user-avatar:hover {
+    border-color: rgba(255, 215, 0, 0.3);
+    background: rgba(255, 215, 0, 0.05);
+}
+
+.avatar-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--gold-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #000;
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+    display: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.mobile-menu-btn:hover {
+    border-color: rgba(255, 215, 0, 0.3);
+    color: var(--gold-primary);
+}
+
+/* Mobile Menu Overlay */
+.mobile-menu {
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background: rgba(11, 11, 11, 0.97);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.light-mode .mobile-menu {
+    background: rgba(255, 255, 255, 0.97);
+    border-bottom-color: rgba(212, 175, 55, 0.2);
+}
+
+.mobile-nav-link {
+    padding: 14px 16px;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all var(--transition);
+    border: 1px solid transparent;
+}
+
+.mobile-nav-link:hover {
+    color: var(--gold-primary);
+    background: rgba(255, 215, 0, 0.05);
+    border-color: rgba(255, 215, 0, 0.1);
+}
+
+.mobile-menu__actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    .navbar__links,
+    .navbar__search {
+        display: none;
+    }
+
+    .mobile-menu-btn {
+        display: flex;
+    }
+
+    .navbar__actions .btn {
+        display: none;
+    }
+
+    .theme-toggle {
+        display: flex;
+    }
+
+    .navbar__inner {
+        padding: 0 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-text {
+        font-size: 1.2rem;
+    }
+}

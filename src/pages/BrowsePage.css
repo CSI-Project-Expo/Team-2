@@ -1,0 +1,141 @@
+/* Shared Browse Page Styles */
+.browse-page {
+    min-height: 100vh;
+    background: var(--bg-primary);
+}
+
+.browse-page__top {
+    background: var(--bg-secondary);
+}
+
+.browse-layout {
+    display: flex;
+    min-height: calc(100vh - var(--nav-height) - 49px);
+}
+
+/* Main Content */
+.browse-main {
+    flex: 1;
+    padding: 28px 28px 60px;
+    min-width: 0;
+}
+
+.browse-main__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    gap: 16px;
+}
+
+.browse-main__title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.browse-main__subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Controls */
+.browse-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.view-toggle {
+    display: flex;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.view-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.view-btn.active {
+    background: rgba(255, 215, 0, 0.1);
+    color: var(--gold-primary);
+}
+
+.view-btn:hover:not(.active) {
+    color: var(--text-primary);
+}
+
+.mobile-filter-btn {
+    display: none;
+}
+
+/* Grid */
+.browse-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.browse-grid--list {
+    grid-template-columns: 1fr;
+}
+
+/* Filter Overlay */
+.filter-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 499;
+    backdrop-filter: blur(4px);
+}
+
+/* No Results */
+.no-results {
+    text-align: center;
+    padding: 80px 24px;
+    color: var(--text-muted);
+}
+
+.no-results span {
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 16px;
+}
+
+.no-results p {
+    font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .browse-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .browse-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .browse-main {
+        padding: 20px 16px 48px;
+    }
+
+    .mobile-filter-btn {
+        display: flex;
+    }
+}

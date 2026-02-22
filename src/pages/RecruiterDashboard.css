@@ -1,0 +1,54 @@
+.job-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.job-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px;
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    transition: all 0.2s;
+}
+
+.job-row:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 215, 0, 0.08);
+}
+
+.job-row-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.job-row-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.job-row-status {
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    font-size: 0.72rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.status-active {
+    color: #48C78E;
+    background: rgba(72, 199, 142, 0.1);
+    border: 1px solid rgba(72, 199, 142, 0.3);
+}
+
+.status-paused {
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}

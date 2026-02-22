@@ -1,0 +1,98 @@
+.industry-filter {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 12px 0;
+    position: sticky;
+    top: var(--nav-height);
+    z-index: 100;
+}
+
+.industry-filter__wrapper {
+    position: relative;
+}
+
+.industry-filter__track {
+    display: flex;
+    gap: 10px;
+    padding: 4px 32px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.industry-filter__track::-webkit-scrollbar {
+    display: none;
+}
+
+.industry-filter__fade {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 80px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.industry-filter__fade--left {
+    left: 0;
+    background: linear-gradient(to right, var(--bg-secondary), transparent);
+}
+
+.industry-filter__fade--right {
+    right: 0;
+    background: linear-gradient(to left, var(--bg-secondary), transparent);
+}
+
+.industry-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+    backdrop-filter: blur(10px);
+}
+
+.industry-chip:hover {
+    border-color: rgba(255, 215, 0, 0.3);
+    background: rgba(255, 215, 0, 0.04);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.industry-chip--active {
+    border-color: var(--blue-accent);
+    background: rgba(69, 126, 255, 0.1);
+    box-shadow: 0 0 0 2px rgba(69, 126, 255, 0.2);
+}
+
+.industry-chip--active .industry-chip__name {
+    color: var(--blue-accent);
+}
+
+.industry-chip__icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.industry-chip__info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.industry-chip__name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.industry-chip__count {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}

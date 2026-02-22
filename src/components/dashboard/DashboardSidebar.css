@@ -1,0 +1,155 @@
+.dashboard-sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: #080808;
+    border-right: 1px solid rgba(255, 215, 0, 0.07);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 200;
+    overflow-y: auto;
+}
+
+.ds-logo {
+    padding: 0 20px 20px;
+}
+
+.ds-logo-text {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.ds-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    margin: 4px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 215, 0, 0.08);
+    border-radius: var(--radius);
+}
+
+.ds-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--gold-gradient);
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.ds-profile-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.ds-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ds-role-tag {
+    font-size: 0.72rem;
+    color: var(--gold-accent);
+    margin-top: 2px;
+}
+
+.ds-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.05);
+    margin: 12px 0;
+}
+
+.ds-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 12px;
+}
+
+.ds-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+    text-decoration: none;
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    position: relative;
+}
+
+.ds-nav-item:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.ds-nav-item--active {
+    color: var(--gold-primary);
+    background: rgba(255, 215, 0, 0.07);
+    border: 1px solid rgba(255, 215, 0, 0.12);
+}
+
+.ds-nav-icon {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.ds-badge {
+    margin-left: auto;
+    background: var(--blue-accent);
+    color: #fff;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ds-logout {
+    color: var(--text-muted);
+    margin: 0 12px;
+    width: calc(100% - 24px);
+}
+
+.ds-logout:hover {
+    color: #FF5050;
+    background: rgba(255, 80, 80, 0.06);
+}
+
+@media (max-width: 768px) {
+    .dashboard-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .dashboard-sidebar.open {
+        transform: translateX(0);
+    }
+}

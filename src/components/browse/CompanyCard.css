@@ -1,0 +1,103 @@
+.company-card {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    cursor: default;
+}
+
+.company-card__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.company-card__logo {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    border: 1px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 900;
+    flex-shrink: 0;
+}
+
+.company-card__verified {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--gold-gradient);
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+.company-card__name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.company-card__rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.rating-value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gold-primary);
+}
+
+.rating-count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.company-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.company-card__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.company-card__meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.company-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    margin-top: auto;
+}
+
+.open-jobs__count {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.open-jobs__label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}

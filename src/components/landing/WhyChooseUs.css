@@ -1,0 +1,81 @@
+.why {
+    background: var(--bg-secondary);
+    position: relative;
+    overflow: hidden;
+}
+
+.why__bg-glow {
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.04) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.why__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.why-card {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.why-card__icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+    transition: all 0.3s ease;
+}
+
+.why-card:hover .why-card__icon {
+    transform: scale(1.15) rotate(-5deg);
+}
+
+.why-card__title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.why-card__desc {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    flex: 1;
+}
+
+.why-card__line {
+    height: 2px;
+    width: 0;
+    border-radius: var(--radius-full);
+    transition: width 0.4s ease;
+}
+
+.why-card:hover .why-card__line {
+    width: 40px;
+}
+
+@media (max-width: 900px) {
+    .why__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 580px) {
+    .why__grid {
+        grid-template-columns: 1fr;
+    }
+}
