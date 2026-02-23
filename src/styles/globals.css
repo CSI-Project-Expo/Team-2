@@ -10,7 +10,6 @@
   /* ========================
      LIGHT THEME DEFAULT
   ======================== */
-
   --bg-primary: #F5F5F5;
   --bg-secondary: #F0F0F0;
   --bg-tertiary: #E8E8E8;
@@ -67,6 +66,49 @@
   --nav-height: 72px;
   --sidebar-width: 260px;
 }
+
+/* ============================================
+   DARK SECTION UTILITY (FORCE WHITE TEXT)
+============================================ */
+.section-dark {
+  /* Force dark background */
+  background: var(--section-dark-bg) !important; 
+  /* Force main text to white */
+  color: var(--section-dark-text) !important;
+}
+
+/* Force Headlines and Paragraphs to white */
+.section-dark .cta__title,
+.section-dark .cta__note,
+.section-dark h2,
+.section-dark p {
+  color: var(--section-dark-text) !important;
+}
+
+/* Force the sub-text (Join 2 million+ students) to light grey */
+.section-dark .text-secondary {
+  color: var(--section-dark-text-secondary) !important;
+}
+
+/* Force the badge text to white */
+.section-dark .cta__badge span {
+  color: #ffffff !important;
+}
+
+/* Force all text inside to be visible (White/Grey) */
+.section-dark .section-title,
+.section-dark h1,
+.section-dark h2,
+.section-dark p,
+.section-dark span:not(.text-gold) {
+  color: var(--section-dark-text) !important;
+}
+
+/* This fixes the "Join 2 million+ students" sub-text */
+.section-dark .text-secondary {
+  color: var(--section-dark-text-secondary) !important;
+}
+
 /* --- Light Mode Variables --- */
 .dark-mode {
   --bg-primary: #0B0B0B;

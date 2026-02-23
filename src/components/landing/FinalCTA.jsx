@@ -6,7 +6,7 @@ import './FinalCTA.css';
 
 const FinalCTA = () => {
     return (
-        <section className="final-cta">
+        <section className="final-cta section section-dark">
             <div className="cta__bg-gradient" />
             <div className="cta__particles">
                 {[...Array(20)].map((_, i) => (
@@ -39,7 +39,7 @@ const FinalCTA = () => {
                         <br />Now.
                     </h2>
 
-                    <p className="cta__desc">
+                    <p className="text-secondary">
                         Join 2 million+ students who've found their path through HireSphere.
                         Your next chapter starts with one click.
                     </p>

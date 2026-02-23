@@ -61,7 +61,7 @@
     font-weight: 900;
     line-height: 1.05;
     letter-spacing: -1px;
-    color: var(--text-primary);
+    color: var(--section-dark-text); /* Instead of #000 or #111 */
 }
 
 .cta__desc {
@@ -90,6 +90,6 @@
 
 .cta__note {
     font-size: 0.8rem;
-    color: var(--text-muted);
+    color: #ffffff !important;
     margin-top: -8px;
 }
