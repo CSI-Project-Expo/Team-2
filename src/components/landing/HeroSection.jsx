@@ -48,6 +48,7 @@ const HeroSection = () => {
                     <span>India's #1 Premium Job Platform</span>
                     <FiArrowRight size={12} />
                 </motion.div>
+                <br />
 
                 {/* Headline */}
                 <motion.h1
@@ -72,7 +73,9 @@ const HeroSection = () => {
                     HireSphere connects verified students with top-tier companies through a fair,
                     transparent, and merit-based hiring ecosystem.
                 </motion.p>
+                <br />
 
+                <br />
                 {/* Search Bar */}
                 <motion.form
                     className="hero__search"

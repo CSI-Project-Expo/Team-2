@@ -9,22 +9,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-three/drei": "latest",
+    "@react-three/fiber": "latest",
+    "@studio-freight/lenis": "latest",
     "framer-motion": "latest",
     "react": "latest",
-    "react-dom": "latest",
-    "react-router-dom": "latest",
-    "react-icons": "latest",
     "react-countup": "latest",
+    "react-dom": "latest",
+    "react-icons": "latest",
     "react-intersection-observer": "latest",
-    "three": "latest",
-    "@react-three/fiber": "latest",
-    "@react-three/drei": "latest",
-    "@studio-freight/lenis": "latest"
+    "react-router-dom": "latest",
+    "three": "latest"
   },
   "devDependencies": {
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.0",
-    "vite": "^5.2.0"
+    "vite": "^7.3.1"
   }
 }

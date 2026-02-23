@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ThemeProvider } from './context/ThemeContext';
 import CursorFollower from './components/common/CursorFollower';
+//import { useLocation } from 'react-router-dom';
 
 // Pages
 import LandingPage from './pages/LandingPage';
@@ -55,9 +56,11 @@ const AppRoutes = () => {
 };
 
 const App = () => {
+    const location = useLocation();
+
     return (
         <ThemeProvider>
-            <CursorFollower />
+            {location.pathname === "/" && <CursorFollower />}
             <AppRoutes />
         </ThemeProvider>
     );
