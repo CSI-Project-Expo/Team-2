@@ -7,14 +7,18 @@
 
 /* --- CSS Variables (Dark Mode Default) --- */
 :root {
-  /* Colors */
-  --bg-primary: #0B0B0B;
-  --bg-secondary: #111111;
-  --bg-tertiary: #161616;
-  --bg-card: rgba(255, 255, 255, 0.03);
-  --bg-card-hover: rgba(255, 255, 255, 0.06);
+  /* ========================
+     LIGHT THEME DEFAULT
+  ======================== */
 
-  /* Gold Palette */
+  --bg-primary: #F5F5F5;
+  --bg-secondary: #F0F0F0;
+  --bg-tertiary: #E8E8E8;
+
+  --bg-card: rgba(0, 0, 0, 0.03);
+  --bg-card-hover: rgba(0, 0, 0, 0.05);
+
+  /* Gold Palette (same) */
   --gold-primary: #FFD700;
   --gold-secondary: #FFB700;
   --gold-tertiary: #D4AF37;
@@ -24,73 +28,64 @@
   --gold-glow: 0 0 20px rgba(255, 215, 0, 0.25), 0 0 40px rgba(255, 215, 0, 0.1);
   --gold-glow-strong: 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.2);
 
-  /* Action Blue */
+  /* Blue */
   --blue-accent: #457EFF;
   --blue-light: #6B9FFF;
   --blue-dark: #2B5FD9;
   --blue-glow: 0 0 20px rgba(69, 126, 255, 0.3);
 
   /* Text */
-  --text-primary: #FFFFFF;
-  --text-secondary: #AAAAAA;
-  --text-muted: #666666;
+  --text-primary: #111111;
+  --text-secondary: #444444;
+  --text-muted: #888888;
   --text-gold: var(--gold-primary);
 
   /* Glass */
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 215, 0, 0.15);
-  --glass-border-hover: rgba(255, 215, 0, 0.4);
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(200, 160, 0, 0.25);
+  --glass-border-hover: rgba(200, 160, 0, 0.5);
   --glass-blur: blur(15px);
 
   /* Shadows */
-  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.4);
-  --shadow-card-hover: 0 20px 50px rgba(0, 0, 0, 0.6);
-  --shadow-gold: 0 0 30px rgba(255, 215, 0, 0.2);
-  --shadow-blue: 0 0 20px rgba(69, 126, 255, 0.3);
+  --shadow-card: 0 4px 15px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 10px 30px rgba(0, 0, 0, 0.12);
+  --shadow-gold: 0 0 30px rgba(255, 215, 0, 0.15);
+  --shadow-blue: 0 0 20px rgba(69, 126, 255, 0.2);
 
-  /* Border */
   --radius: 8px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-full: 9999px;
 
-  /* Transitions */
   --transition: 300ms ease-in-out;
   --transition-fast: 150ms ease;
   --transition-slow: 500ms ease;
 
-  /* Typography */
   --font-primary: 'Inter', 'Roboto', sans-serif;
   --font-display: 'Outfit', 'Inter', sans-serif;
 
-  /* Spacing */
   --nav-height: 72px;
-
-  /* Sidebar */
   --sidebar-width: 260px;
 }
-
 /* --- Light Mode Variables --- */
-.light-mode {
-  --bg-primary: #F5F5F5;      /* Main background */
-  --bg-secondary: #F0F0F0;    /* Sections */
-  --bg-tertiary: #E8E8E8;     /* Slight depth variation */
+.dark-mode {
+  --bg-primary: #0B0B0B;
+  --bg-secondary: #111111;
+  --bg-tertiary: #161616;
+  --bg-card: rgba(255, 255, 255, 0.03);
+  --bg-card-hover: rgba(255, 255, 255, 0.06);
 
-  --bg-card: rgba(0, 0, 0, 0.03);
-  --bg-card-hover: rgba(0, 0, 0, 0.05);
+  --text-primary: #FFFFFF;
+  --text-secondary: #AAAAAA;
+  --text-muted: #666666;
 
-  --glass-bg: rgba(255, 255, 255, 0.6);
-  --glass-border: rgba(200, 160, 0, 0.25);
-  --glass-border-hover: rgba(200, 160, 0, 0.5);
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 215, 0, 0.15);
+  --glass-border-hover: rgba(255, 215, 0, 0.4);
 
-  --text-primary: #111111;
-  --text-secondary: #444444;
-  --text-muted: #888888;
-
-  --shadow-card: 0 4px 15px rgba(0, 0, 0, 0.06);
-  --shadow-card-hover: 0 10px 30px rgba(0, 0, 0, 0.12);
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --shadow-card-hover: 0 20px 50px rgba(0, 0, 0, 0.6);
 }
-
 /* ============================================
    RESET & BASE
    ============================================ */

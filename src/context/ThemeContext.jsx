@@ -3,7 +3,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-    const [isDark, setIsDark] = useState(true);
+    // Light mode default
+    const [isDark, setIsDark] = useState(false);
 
     useEffect(() => {
         const saved = localStorage.getItem('hiresphere-theme');
@@ -12,10 +13,11 @@ export const ThemeProvider = ({ children }) => {
 
     useEffect(() => {
         if (isDark) {
-            document.body.classList.remove('light-mode');
+            document.body.classList.add('dark-mode');
         } else {
-            document.body.classList.add('light-mode');
+            document.body.classList.remove('dark-mode');
         }
+
         localStorage.setItem('hiresphere-theme', isDark ? 'dark' : 'light');
     }, [isDark]);
 
