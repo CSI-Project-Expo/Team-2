@@ -143,6 +143,29 @@
     background: rgba(255, 80, 80, 0.06);
 }
 
+/* Back to landing page link */
+.ds-back-home {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 12px;
+    margin: 0 12px;
+    border-radius: var(--radius);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    border: 1px solid rgba(255, 215, 0, 0.1);
+    background: rgba(255, 215, 0, 0.04);
+    transition: all 0.2s;
+}
+
+.ds-back-home:hover {
+    color: var(--gold-primary);
+    background: rgba(255, 215, 0, 0.08);
+    border-color: rgba(255, 215, 0, 0.25);
+}
+
 @media (max-width: 768px) {
     .dashboard-sidebar {
         transform: translateX(-100%);

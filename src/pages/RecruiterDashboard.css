@@ -1,3 +1,7 @@
+/* ========================
+   RECRUITER DASHBOARD CSS
+   ======================== */
+
 .job-rows {
     display: flex;
     flex-direction: column;
@@ -9,7 +13,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 12px;
+    padding: 13px 14px;
     border-radius: var(--radius);
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.04);
@@ -18,7 +22,7 @@
 
 .job-row:hover {
     background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 215, 0, 0.08);
+    border-color: rgba(255, 215, 0, 0.1);
 }
 
 .job-row-title {
@@ -51,4 +55,426 @@
     color: var(--text-muted);
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── AI Bar Chart ── */
+.rd-ai-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.rd-ai-bar-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.rd-ai-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.rd-ai-bar-track {
+    height: 9px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.rd-ai-bar-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+}
+
+/* ── Resume Panel ── */
+.rd-resume-panel {
+    margin-top: 20px;
+}
+
+.rd-resume-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.rd-total-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 10px;
+    background: rgba(69, 126, 255, 0.12);
+    color: var(--blue-accent);
+    border: 1px solid rgba(69, 126, 255, 0.25);
+    border-radius: var(--radius-full);
+    padding: 2px 10px;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.rd-filter-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.rd-ai-note {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.74rem;
+    color: #48C78E;
+    background: rgba(72, 199, 142, 0.08);
+    border: 1px solid rgba(72, 199, 142, 0.2);
+    border-radius: var(--radius-full);
+    padding: 4px 10px;
+    white-space: nowrap;
+}
+
+.rd-job-select {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    outline: none;
+}
+
+.rd-job-select:focus {
+    border-color: var(--gold-primary);
+}
+
+/* Column headers */
+.rd-resume-col-header {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr 1.2fr 1.2fr;
+    gap: 12px;
+    padding: 8px 16px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    margin-bottom: 4px;
+}
+
+/* Resume list scroll container */
+.rd-resume-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.rd-resume-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr 1.2fr 1.2fr;
+    gap: 12px;
+    align-items: center;
+    padding: 13px 16px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.2s;
+}
+
+.rd-resume-row:hover {
+    background: rgba(255, 255, 255, 0.045);
+    border-color: rgba(255, 215, 0, 0.1);
+}
+
+.rd-rank {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rd-rank-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 800;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.rd-rank-gold {
+    background: rgba(255, 215, 0, 0.15);
+    color: #FFD700;
+}
+
+.rd-rank-silver {
+    background: rgba(180, 180, 200, 0.15);
+    color: #B8B8D0;
+}
+
+.rd-rank-bronze {
+    background: rgba(200, 140, 80, 0.15);
+    color: #CD7F32;
+}
+
+.rd-applicant-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.rd-applicant-role {
+    font-size: 0.72rem;
+    margin-top: 2px;
+    font-weight: 500;
+}
+
+.rd-applied-job {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+
+.rd-apply-date {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.rd-score-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    border: 1px solid;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.rd-score-bar-mini {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    width: 100%;
+    max-width: 90px;
+}
+
+.rd-score-bar-mini-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.8s ease;
+}
+
+/* Action Buttons */
+.rd-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rd-view-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    background: var(--gold-gradient);
+    color: #000;
+    font-size: 0.78rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(255, 215, 0, 0.25);
+    transition: transform 0.2s, box-shadow 0.2s;
+    white-space: nowrap;
+    font-family: var(--font-primary);
+}
+
+.rd-view-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 16px rgba(255, 215, 0, 0.4);
+}
+
+.rd-download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background: rgba(69, 126, 255, 0.1);
+    border: 1px solid rgba(69, 126, 255, 0.25);
+    color: var(--blue-accent);
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.rd-download-btn:hover {
+    background: rgba(69, 126, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.rd-empty {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ── Resume Viewer Modal ── */
+.rd-viewer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.rd-viewer-modal {
+    background: var(--bg-secondary);
+    border: 1px solid rgba(255, 215, 0, 0.18);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 540px;
+    padding: 32px;
+    position: relative;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+.rd-viewer-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.rd-viewer-close:hover {
+    background: rgba(255, 80, 80, 0.1);
+    color: #FF5050;
+}
+
+.rd-viewer-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.rd-viewer-name {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.rd-viewer-sub {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.rd-viewer-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.rd-viewer-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.rd-viewer-meta-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.rd-viewer-meta-val {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.rd-viewer-score-bar {
+    height: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.rd-viewer-score-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 1s ease;
+}
+
+.rd-viewer-score-txt {
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.rd-viewer-skills {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rd-viewer-skill-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.rd-viewer-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.rd-no-file {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-style: italic;
 }

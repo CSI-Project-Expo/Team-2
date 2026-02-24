@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ThemeProvider } from './context/ThemeContext';
+import { ResumeProvider } from './context/ResumeContext';
 import CursorFollower from './components/common/CursorFollower';
-//import { useLocation } from 'react-router-dom';
 
 // Pages
 import LandingPage from './pages/LandingPage';
@@ -59,10 +59,12 @@ const App = () => {
     const location = useLocation();
 
     return (
-        <ThemeProvider>
-            {location.pathname === "/" && <CursorFollower />}
-            <AppRoutes />
-        </ThemeProvider>
+        <ResumeProvider>
+            <ThemeProvider>
+                {location.pathname === "/" && <CursorFollower />}
+                <AppRoutes />
+            </ThemeProvider>
+        </ResumeProvider>
     );
 };
 

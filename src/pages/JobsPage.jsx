@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { FiFilter, FiGrid, FiList } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import { FiFilter, FiGrid, FiList, FiHome } from 'react-icons/fi';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
 import IndustryFilterBar from '../components/browse/IndustryFilterBar';
 import SidebarFilters from '../components/browse/SidebarFilters';
 import JobCard from '../components/browse/JobCard';
+import JobDetailModal from '../components/browse/JobDetailModal';
 import { mockJobs } from '../data/mockJobs';
 import './BrowsePage.css';
 
@@ -13,10 +15,15 @@ const JobsPage = () => {
     const [industry, setIndustry] = useState('all');
     const [viewMode, setViewMode] = useState('grid');
     const [showMobileFilters, setShowMobileFilters] = useState(false);
+    const [selectedJob, setSelectedJob] = useState(null);
 
     const displayedJobs = industry === 'all'
         ? mockJobs
         : mockJobs.filter(j => j.industry?.toLowerCase().includes(industry));
+
+    const handleApply = (job) => {
+        setSelectedJob(job);
+    };
 
     return (
         <div className="browse-page">
@@ -64,6 +71,9 @@ const JobsPage = () => {
                         </div>
 
                         <div className="browse-controls">
+                            <Link to="/" className="btn btn-ghost btn-sm back-home-btn">
+                                <FiHome size={14} /> Home
+                            </Link>
                             <button
                                 className="btn btn-ghost btn-sm mobile-filter-btn"
                                 onClick={() => setShowMobileFilters(true)}
@@ -95,7 +105,7 @@ const JobsPage = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: i * 0.05 }}
                             >
-                                <JobCard job={job} />
+                                <JobCard job={job} onApply={handleApply} />
                             </motion.div>
                         ))}
                     </div>
@@ -110,6 +120,16 @@ const JobsPage = () => {
             </div>
 
             <Footer />
+
+            {/* Job Detail Modal */}
+            <AnimatePresence>
+                {selectedJob && (
+                    <JobDetailModal
+                        job={selectedJob}
+                        onClose={() => setSelectedJob(null)}
+                    />
+                )}
+            </AnimatePresence>
         </div>
     );
 };

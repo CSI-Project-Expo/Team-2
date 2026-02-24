@@ -1,10 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { FiMapPin, FiBriefcase, FiClock, FiDollarSign, FiArrowRight, FiZap } from 'react-icons/fi';
 import './JobCard.css';
 
-const JobCard = ({ job }) => {
+const JobCard = ({ job, onApply }) => {
     const {
         title, company, logo, color, location,
         type, salary, experience, skills, tags,
@@ -14,7 +13,7 @@ const JobCard = ({ job }) => {
     return (
         <motion.div
             className={`job-card glass-card ${featured ? 'job-card--featured' : ''}`}
-            whileHover={{ y: -5 }}
+            whileHover={{ y: -6 }}
             transition={{ duration: 0.25 }}
         >
             {/* Header */}
@@ -71,9 +70,12 @@ const JobCard = ({ job }) => {
                     <span className="posted-time">{posted}</span>
                     <span className="applicants-count">{applicants} applicants</span>
                 </div>
-                <Link to={`/jobs/${job.id}`} className="btn btn-outline-gold btn-sm">
+                <button
+                    className="job-card__apply-btn"
+                    onClick={() => onApply && onApply(job)}
+                >
                     Apply <FiArrowRight size={12} />
-                </Link>
+                </button>
             </div>
         </motion.div>
     );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FiHome, FiUser, FiFileText, FiBookmark, FiMessageCircle, FiBriefcase, FiUsers, FiSettings, FiLogOut, FiBarChart2, FiShield } from 'react-icons/fi';
+import { FiHome, FiUser, FiFileText, FiBookmark, FiMessageCircle, FiBriefcase, FiUsers, FiSettings, FiLogOut, FiBarChart2, FiShield, FiArrowLeft } from 'react-icons/fi';
 import './DashboardSidebar.css';
 
 const studentNav = [
@@ -52,6 +52,14 @@ const DashboardSidebar = ({ role = 'student' }) => {
                     <div className="ds-role-tag">{roleLabel}</div>
                 </div>
             </div>
+
+            <div className="ds-divider" />
+
+            {/* Back to Landing Page */}
+            <Link to="/" className="ds-back-home">
+                <FiArrowLeft size={15} />
+                <span>Back to Home</span>
+            </Link>
 
             <div className="ds-divider" />
 

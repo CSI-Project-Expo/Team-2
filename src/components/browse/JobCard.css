@@ -1,13 +1,19 @@
 .job-card {
-    padding: 22px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
     position: relative;
+    border-radius: 16px !important;
+    transition: box-shadow 0.3s, transform 0.25s;
+}
+
+.job-card:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(255, 215, 0, 0.12) !important;
 }
 
 .job-card--featured {
-    border-color: rgba(255, 215, 0, 0.2);
+    border-color: rgba(255, 215, 0, 0.25);
 }
 
 .job-card--featured::before {
@@ -105,10 +111,11 @@
 }
 
 .job-card__title {
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 700;
     color: var(--text-primary);
     line-height: 1.4;
+    letter-spacing: -0.01em;
 }
 
 .job-card__tags {
@@ -138,19 +145,26 @@
 }
 
 .skill-chip {
-    padding: 3px 10px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    border-radius: 4px;
+    padding: 4px 11px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
     font-size: 0.74rem;
     color: var(--text-secondary);
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.skill-chip:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
 }
 
 .job-card__footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: 12px;
+    padding-top: 14px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     margin-top: auto;
 }
@@ -158,7 +172,7 @@
 .job-card__footer-info {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
 }
 
 .posted-time {
@@ -170,4 +184,35 @@
     font-size: 0.75rem;
     color: var(--blue-accent);
     font-weight: 500;
+}
+
+/* Apply button — permanent yellow/black, only elevation on hover */
+.job-card__apply-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    background: var(--gold-gradient);
+    color: #000;
+    font-family: var(--font-primary);
+    font-size: 0.82rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 3px 12px rgba(255, 215, 0, 0.28);
+    transition: transform 0.2s, box-shadow 0.2s;
+    white-space: nowrap;
+    letter-spacing: 0.2px;
+}
+
+.job-card__apply-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.45);
+    /* stays yellow/black — no background or color shift */
+}
+
+.job-card__apply-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
 }
