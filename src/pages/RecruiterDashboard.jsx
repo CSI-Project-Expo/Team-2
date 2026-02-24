@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     FiBriefcase, FiUsers, FiMessageCircle, FiPlusCircle, FiTrendingUp,
-    FiFileText, FiEye, FiDownload, FiX, FiAward, FiCheckSquare
+    FiFileText, FiEye, FiDownload, FiX, FiAward, FiCheckSquare, FiCheckCircle
 } from 'react-icons/fi';
 import DashboardSidebar from '../components/dashboard/DashboardSidebar';
+import PostJobModal from '../components/dashboard/PostJobModal';
 import { useResume } from '../context/ResumeContext';
 import './Dashboard.css';
 import './RecruiterDashboard.css';
@@ -29,6 +30,17 @@ const RecruiterDashboard = () => {
     const { getSortedApplications, applications } = useResume();
     const [viewingResume, setViewingResume] = useState(null);
     const [selectedJob, setSelectedJob] = useState('all');
+    const [showPostModal, setShowPostModal] = useState(false);
+    const [newJobs, setNewJobs] = useState([]);
+    const [toast, setToast] = useState(null);
+
+    const handlePostJob = (job) => {
+        setNewJobs(prev => [job, ...prev]);
+        console.log('[RecruiterDashboard] New job posted:', job);
+        setToast(`"${job.title}" posted successfully!`);
+        setTimeout(() => setToast(null), 3500);
+        // modal closes itself after success screen
+    };
 
     const sortedApps = getSortedApplications();
 
@@ -37,7 +49,7 @@ const RecruiterDashboard = () => {
         : sortedApps.filter(a => a.job.title === selectedJob);
 
     const stats = [
-        { icon: <FiBriefcase />, label: 'Active Jobs', value: 5, color: '#FFD700' },
+        { icon: <FiBriefcase />, label: 'Active Jobs', value: 5 + newJobs.length, color: '#FFD700' },
         { icon: <FiUsers />, label: 'Total Applicants', value: applications.length || 247, color: '#457EFF' },
         { icon: <FiMessageCircle />, label: 'Active Chats', value: 12, color: '#48C78E' },
         { icon: <FiTrendingUp />, label: 'Views This Week', value: 1843, color: '#AC6CFF' },
@@ -64,7 +76,7 @@ const RecruiterDashboard = () => {
                         <h1 className="dashboard-title">Recruiter <span className="text-gold">Hub</span></h1>
                         <p className="dashboard-subtitle">Manage your job posts and find top talent.</p>
                     </div>
-                    <button className="btn btn-gold btn-sm">
+                    <button className="btn btn-gold btn-sm" onClick={() => setShowPostModal(true)}>
                         <FiPlusCircle size={14} /> Post New Job
                     </button>
                 </div>
@@ -93,8 +105,23 @@ const RecruiterDashboard = () => {
                 <div className="dashboard-cols">
                     {/* Job Postings */}
                     <motion.div className="dash-panel glass-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-                        <h3 className="dash-panel-title">Job Postings</h3>
+                        <h3 className="dash-panel-title">
+                            Job Postings
+                            {newJobs.length > 0 && (
+                                <span className="rd-total-badge" style={{ marginLeft: 8 }}>+{newJobs.length} new</span>
+                            )}
+                        </h3>
                         <div className="job-rows">
+                            {/* Newly posted jobs appear at top */}
+                            {newJobs.map((job, i) => (
+                                <div key={`new-${i}`} className="job-row rd-new-job-row">
+                                    <div className="job-row-info">
+                                        <div className="job-row-title">{job.title}</div>
+                                        <div className="job-row-meta">{job.company} · {job.type} · Just now</div>
+                                    </div>
+                                    <span className="job-row-status status-active">Active</span>
+                                </div>
+                            ))}
                             {jobPostings.map((job, i) => (
                                 <div key={i} className="job-row">
                                     <div className="job-row-info">
@@ -351,6 +378,31 @@ const RecruiterDashboard = () => {
                                 )}
                             </div>
                         </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Post Job Modal */}
+            <AnimatePresence>
+                {showPostModal && (
+                    <PostJobModal
+                        onClose={() => setShowPostModal(false)}
+                        onSubmit={handlePostJob}
+                    />
+                )}
+            </AnimatePresence>
+
+            {/* Success Toast */}
+            <AnimatePresence>
+                {toast && (
+                    <motion.div
+                        className="rd-toast"
+                        initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                    >
+                        <FiCheckCircle size={18} />
+                        {toast}
                     </motion.div>
                 )}
             </AnimatePresence>
