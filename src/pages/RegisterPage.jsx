@@ -116,8 +116,10 @@ const RegisterPage = () => {
                                 exit={{ opacity: 0, y: -20 }}
                             >
                                 <div className="auth-card__header">
-                                    <h1 className="auth-card__title">I am a...</h1>
+                                    <center>
+                                    <h1 className="auth-card__title">"I am a, "</h1>
                                     <p className="auth-card__sub">Choose your role to get started</p>
+                                    </center>
                                 </div>
 
                                 <div className="role-cards">
@@ -125,7 +127,9 @@ const RegisterPage = () => {
                                         className={`role-card ${role === 'student' ? 'role-card--active' : ''}`}
                                         onClick={() => setRole('student')}
                                     >
-                                        <span className="role-card__icon">🎓</span>
+                                        <span className="role-card__icon">
+                                            <FiUser />
+                                        </span>
                                         <span className="role-card__title">Student</span>
                                         <span className="role-card__desc">Find jobs & internships</span>
                                     </button>
@@ -133,7 +137,9 @@ const RegisterPage = () => {
                                         className={`role-card ${role === 'recruiter' ? 'role-card--active' : ''}`}
                                         onClick={() => setRole('recruiter')}
                                     >
-                                        <span className="role-card__icon">🏢</span>
+                                        <span className="role-card__icon">
+                                            <FiBriefcase />
+                                        </span>
                                         <span className="role-card__title">Recruiter</span>
                                         <span className="role-card__desc">Hire top talent</span>
                                     </button>
@@ -154,14 +160,19 @@ const RegisterPage = () => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                            >
-                                <div className="auth-card__header">
-                                    <h1 className="auth-card__title">
-                                        {role === 'student' ? '🎓 Student' : '🏢 Recruiter'} Sign Up
-                                    </h1>
-                                    <p className="auth-card__sub">Fill in your details to create your account</p>
-                                </div>
-
+                         >
+                            <div className="auth-card__header">
+                                <h1
+                                    className="auth-card__title"
+                                    style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                                >
+                                    {role === 'student' ? <FiUser /> : <FiBriefcase />}
+                                    {role === 'student' ? 'Student' : 'Recruiter'} Sign Up
+                                </h1>
+                                <p className="auth-card__sub">
+                                    Fill in your details to create your account
+                                </p>
+                            </div>
                                 <form onSubmit={handleSubmit} className="auth-form">
                                     {fields.map(f => (
                                         <div key={f.key} className="form-group">
