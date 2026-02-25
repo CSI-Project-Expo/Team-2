@@ -52,12 +52,39 @@ const RecruiterDashboard = () => {
         fetchJobs();
     }, []);
 
-    const handlePostJob = (job) => {
-        setNewJobs(prev => [job, ...prev]);
-        console.log('[RecruiterDashboard] New job posted:', job);
-        setToast(`"${job.title}" posted successfully!`);
-        setTimeout(() => setToast(null), 3500);
-        // modal closes itself after success screen
+    const handlePostJob = async (job) => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch('http://localhost:5000/api/jobs', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    title: job.title,
+                    companyName: job.company,
+                    location: job.location,
+                    type: job.type,
+                    salary: job.salary,
+                    description: job.description,
+                    requirements: job.skills
+                })
+            });
+
+            if (res.ok) {
+                setNewJobs(prev => [job, ...prev]);
+                console.log('[RecruiterDashboard] New job posted:', job);
+                setToast(`"${job.title}" posted successfully!`);
+                setTimeout(() => setToast(null), 3500);
+            } else {
+                const errorData = await res.json();
+                alert(`Failed to post job: ${errorData.message}`);
+            }
+        } catch (error) {
+            console.error('Error posting job:', error);
+            alert('Something went wrong while posting the job.');
+        }
     };
 
     const sortedApps = getSortedApplications();

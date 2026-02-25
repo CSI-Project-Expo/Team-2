@@ -56,10 +56,15 @@ const RegisterPage = () => {
         e.preventDefault();
         setLoading(true);
         try {
+            const payload = { ...formData, role };
+            if (role === 'recruiter' && payload.companyEmail) {
+                payload.email = payload.companyEmail;
+            }
+
             const res = await fetch('http://localhost:5000/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...formData, role })
+                body: JSON.stringify(payload)
             });
             const data = await res.json();
 

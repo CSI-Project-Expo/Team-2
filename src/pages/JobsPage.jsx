@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FiFilter, FiGrid, FiList, FiHome } from 'react-icons/fi';
@@ -16,10 +16,51 @@ const JobsPage = () => {
     const [viewMode, setViewMode] = useState('grid');
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     const [selectedJob, setSelectedJob] = useState(null);
+    const [backendJobs, setBackendJobs] = useState([]);
+
+    useEffect(() => {
+        const fetchJobs = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/jobs');
+                const data = await res.json();
+
+                // Map backend jobs to match the format of mockJobs
+                const mappedJobs = data.map(job => ({
+                    id: job._id,
+                    title: job.title,
+                    company: job.companyName,
+                    logo: job.companyName ? job.companyName.charAt(0).toUpperCase() : 'C',
+                    color: '#4285F4', // Default blue color
+                    location: job.location,
+                    type: job.type,
+                    salary: job.salary,
+                    experience: 'Not specified', // Default since backend doesn't have it
+                    skills: job.requirements || [],
+                    tags: [job.type],
+                    posted: new Date(job.createdAt).toLocaleDateString(),
+                    applicants: job.applicants ? job.applicants.length : 0,
+                    description: job.description,
+                    industry: 'Tech', // Default or derived
+                    department: 'Engineering',
+                    remote: job.location?.toLowerCase().includes('remote'),
+                    urgent: false,
+                    featured: false,
+                }));
+
+                setBackendJobs(mappedJobs);
+            } catch (error) {
+                console.error('Error fetching jobs:', error);
+            }
+        };
+
+        fetchJobs();
+    }, []);
+
+    const allJobs = [...backendJobs, ...mockJobs];
 
     const displayedJobs = industry === 'all'
-        ? mockJobs
-        : mockJobs.filter(j => j.industry?.toLowerCase().includes(industry));
+        ? allJobs
+        : allJobs.filter(j => j.industry?.toLowerCase().includes(industry));
 
     const handleApply = (job) => {
         setSelectedJob(job);
