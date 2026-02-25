@@ -51,7 +51,7 @@ const Testimonials = () => {
     const t = testimonials[active];
 
     return (
-        <section className="testimonials section">
+        <section id="testimonials" className="testimonials section">
             <div className="testimonials__glow" />
             <div className="container">
                 <motion.div

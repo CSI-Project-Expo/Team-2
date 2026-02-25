@@ -20,9 +20,11 @@ const recruiterFields = [
 ];
 
 const RegisterPage = () => {
-    const [step, setStep] = useState(1); // 1=role, 2=form
+    const [step, setStep] = useState(1); // 1=role, 2=form, 3=otp
     const [role, setRole] = useState(null);
     const [formData, setFormData] = useState({});
+    const [otp, setOtp] = useState(['', '', '', '', '', '']);
+    const [otpSent, setOtpSent] = useState(false);
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -52,8 +54,73 @@ const RegisterPage = () => {
         setErrors(prev => ({ ...prev, [key]: err }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleFormSubmit = async (e) => {
         e.preventDefault();
+
+        // Check local validation errors first
+        if (Object.values(errors).some(err => err !== '')) {
+            alert('Please fix the errors before proceeding.');
+            return;
+        }
+
+        if (role === 'recruiter') {
+            // Proceed to OTP step for recruiters
+            setLoading(true);
+            setTimeout(() => {
+                setLoading(false);
+                setStep(3);
+                setOtpSent(true);
+            }, 1000); // Simulate API call to send OTP
+        } else {
+            // Students can register directly
+            registerUser();
+        }
+    };
+
+    const handleOtpChange = (index, value) => {
+        if (value.length > 1) value = value.slice(-1); // Only allow 1 char
+        if (!/^[0-9]*$/.test(value)) return; // Only allow numbers
+
+        const newOtp = [...otp];
+        newOtp[index] = value;
+        setOtp(newOtp);
+
+        // Auto focus next input
+        if (value && index < 5) {
+            const nextInput = document.getElementById(`otp-${index + 1}`);
+            if (nextInput) nextInput.focus();
+        }
+    };
+
+    const handleOtpKeyDown = (index, e) => {
+        // Auto focus previous input on backspace if empty
+        if (e.key === 'Backspace' && !otp[index] && index > 0) {
+            const prevInput = document.getElementById(`otp-${index - 1}`);
+            if (prevInput) prevInput.focus();
+        }
+    };
+
+    const handleVerifyOtp = async (e) => {
+        e.preventDefault();
+        const enteredOtp = otp.join('');
+        if (enteredOtp.length !== 6) {
+            alert('Please enter a valid 6-digit OTP.');
+            return;
+        }
+
+        setLoading(true);
+        // Simulate OTP verification logic
+        setTimeout(() => {
+            if (enteredOtp === '123456') { // Mock valid OTP
+                registerUser();
+            } else {
+                setLoading(false);
+                alert('Invalid OTP. Please try again. (Hint: use 123456)');
+            }
+        }, 1500);
+    };
+
+    const registerUser = async () => {
         setLoading(true);
         try {
             const payload = { ...formData, role };
@@ -136,7 +203,16 @@ const RegisterPage = () => {
                             {step > 1 ? <FiCheck size={14} /> : '1'}
                         </div>
                         <div className={`reg-progress-line ${step > 1 ? 'filled' : ''}`} />
-                        <div className={`reg-step ${step >= 2 ? 'active' : ''}`}>2</div>
+                        <div className={`reg-step ${step >= 2 ? 'active' : ''}`}>
+                            {step > 2 ? <FiCheck size={14} /> : '2'}
+                        </div>
+
+                        {role === 'recruiter' && (
+                            <>
+                                <div className={`reg-progress-line ${step > 2 ? 'filled' : ''}`} />
+                                <div className={`reg-step ${step >= 3 ? 'active' : ''}`}>3</div>
+                            </>
+                        )}
                     </div>
 
                     <AnimatePresence mode="wait">
@@ -186,7 +262,7 @@ const RegisterPage = () => {
                                     Continue <FiArrowRight size={16} />
                                 </button>
                             </motion.div>
-                        ) : (
+                        ) : step === 2 ? (
                             <motion.div
                                 key="step2"
                                 initial={{ opacity: 0, y: 20 }}
@@ -205,7 +281,7 @@ const RegisterPage = () => {
                                         Fill in your details to create your account
                                     </p>
                                 </div>
-                                <form onSubmit={handleSubmit} className="auth-form">
+                                <form onSubmit={handleFormSubmit} className="auth-form">
                                     {fields.map(f => (
                                         <div key={f.key} className="form-group">
                                             <label className="form-label">{f.label}</label>
@@ -236,9 +312,71 @@ const RegisterPage = () => {
                                     </button>
                                 </form>
 
-                                <button className="auth-back-step" onClick={() => setStep(1)}>
+                                <button className="auth-back-step" onClick={() => setStep(1)} disabled={loading}>
                                     <FiArrowLeft size={14} /> Change role
                                 </button>
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                key="step3"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                className="otp-verification-step"
+                            >
+                                <div className="auth-card__header">
+                                    <center>
+                                        <div className="otp-icon-wrapper" style={{ margin: '0 auto 16px', width: '50px', height: '50px', borderRadius: '50%', background: 'rgba(255, 215, 0, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold-primary)' }}>
+                                            <FiLock size={24} />
+                                        </div>
+                                        <h1 className="auth-card__title">Verify Company Email</h1>
+                                        <p className="auth-card__sub" style={{ lineHeight: '1.5' }}>
+                                            We've sent a 6-digit verification code to<br />
+                                            <strong style={{ color: 'var(--text-primary)' }}>{formData.companyEmail}</strong>
+                                        </p>
+                                    </center>
+                                </div>
+
+                                <form onSubmit={handleVerifyOtp} className="auth-form" style={{ marginTop: '24px' }}>
+                                    <div className="otp-inputs" style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '8px' }}>
+                                        {otp.map((digit, index) => (
+                                            <input
+                                                key={index}
+                                                id={`otp-${index}`}
+                                                type="text"
+                                                inputMode="numeric"
+                                                maxLength={1}
+                                                value={digit}
+                                                onChange={(e) => handleOtpChange(index, e.target.value)}
+                                                onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                                                className="input"
+                                                style={{ width: '45px', height: '50px', textAlign: 'center', fontSize: '1.25rem', fontWeight: 'bold', padding: '0', borderRadius: '8px' }}
+                                                required
+                                            />
+                                        ))}
+                                    </div>
+                                    <div className="form-hint" style={{ textAlign: 'center', marginBottom: '24px' }}>
+                                        Hint: Use <strong style={{ color: 'var(--gold-primary)' }}>123456</strong> to bypass verification
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        className={`btn btn-gold btn-lg auth-submit ${loading ? 'loading' : ''}`}
+                                        disabled={loading || otp.join('').length !== 6}
+                                        style={{ width: '100%', justifyContent: 'center' }}
+                                    >
+                                        {loading ? <span className="spinner" /> : 'Verify & Setup Account'}
+                                    </button>
+                                </form>
+
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
+                                    <button className="auth-back-step" onClick={() => { setStep(2); setOtp(['', '', '', '', '', '']); }} disabled={loading}>
+                                        <FiArrowLeft size={14} /> Back
+                                    </button>
+                                    <button className="auth-back-step" style={{ color: 'var(--blue-accent)' }} disabled={loading}>
+                                        Resend Code
+                                    </button>
+                                </div>
                             </motion.div>
                         )}
                     </AnimatePresence>

@@ -53,7 +53,7 @@ const Navbar = ({ variant = 'landing', searchQuery, onSearchChange }) => {
     const navLinks = [
         { label: 'Jobs', path: '/jobs' },
         { label: 'Companies', path: '/companies' },
-        { label: 'Services', path: '#' },
+        { label: 'Testimonials', path: '/#testimonials' },
     ];
 
     const isActive = (path) => location.pathname === path;
@@ -83,15 +83,29 @@ const Navbar = ({ variant = 'landing', searchQuery, onSearchChange }) => {
                         </div>
                     ) : (
                         <div className="navbar__links">
-                            {navLinks.map(link => (
-                                <Link
-                                    key={link.label}
-                                    to={link.path}
-                                    className={`nav-link ${isActive(link.path) ? 'nav-link--active' : ''}`}
-                                >
-                                    {link.label}
-                                </Link>
-                            ))}
+                            {navLinks.map(link => {
+                                // For hash links, use normal anchor. For routes, use React Router Link
+                                if (link.path.includes('#')) {
+                                    return (
+                                        <a
+                                            key={link.label}
+                                            href={link.path}
+                                            className="nav-link"
+                                        >
+                                            {link.label}
+                                        </a>
+                                    );
+                                }
+                                return (
+                                    <Link
+                                        key={link.label}
+                                        to={link.path}
+                                        className={`nav-link ${isActive(link.path) ? 'nav-link--active' : ''}`}
+                                    >
+                                        {link.label}
+                                    </Link>
+                                );
+                            })}
                         </div>
                     )}
 
@@ -129,11 +143,20 @@ const Navbar = ({ variant = 'landing', searchQuery, onSearchChange }) => {
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.2 }}
                     >
-                        {navLinks.map(link => (
-                            <Link key={link.label} to={link.path} className="mobile-nav-link">
-                                {link.label}
-                            </Link>
-                        ))}
+                        {navLinks.map(link => {
+                            if (link.path.includes('#')) {
+                                return (
+                                    <a key={link.label} href={link.path} className="mobile-nav-link" onClick={() => setMobileOpen(false)}>
+                                        {link.label}
+                                    </a>
+                                );
+                            }
+                            return (
+                                <Link key={link.label} to={link.path} className="mobile-nav-link" onClick={() => setMobileOpen(false)}>
+                                    {link.label}
+                                </Link>
+                            );
+                        })}
                         <div className="mobile-menu__actions">
                             {user ? (
                                 <button onClick={handleLogout} className="btn btn-ghost" style={{ flex: 1, justifyContent: 'center' }}>Logout</button>

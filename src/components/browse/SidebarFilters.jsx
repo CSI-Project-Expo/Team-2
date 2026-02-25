@@ -4,13 +4,13 @@ import './SidebarFilters.css';
 
 const companyTypes = ['Corporate', 'Foreign MNC', 'Startup', 'Product-Based', 'Service-Based'];
 const locations = [
-    { city: 'Bangalore', count: '3,421' },
-    { city: 'Mumbai', count: '2,180' },
-    { city: 'Hyderabad', count: '1,854' },
-    { city: 'Delhi NCR', count: '1,632' },
-    { city: 'Pune', count: '987' },
-    { city: 'Chennai', count: '756' },
-    { city: 'Remote', count: '4,200' },
+    'Bangalore',
+    'Mumbai',
+    'Hyderabad',
+    'Delhi NCR',
+    'Pune',
+    'Chennai',
+    'Remote',
 ];
 const departments = ['Engineering', 'Design', 'Marketing', 'Finance', 'Sales', 'Operations', 'HR'];
 
@@ -33,6 +33,16 @@ const SidebarFilters = ({ onFiltersChange, onClose, isMobile = false }) => {
     const [selectedDepts, setSelectedDepts] = useState([]);
     const [locationSearch, setLocationSearch] = useState('');
 
+    React.useEffect(() => {
+        if (onFiltersChange) {
+            onFiltersChange({
+                types: selectedTypes,
+                locations: selectedLocations,
+                departments: selectedDepts,
+            });
+        }
+    }, [selectedTypes, selectedLocations, selectedDepts, onFiltersChange]);
+
     const toggleItem = (list, setList, val) => {
         setList(prev => prev.includes(val) ? prev.filter(x => x !== val) : [...prev, val]);
     };
@@ -46,7 +56,7 @@ const SidebarFilters = ({ onFiltersChange, onClose, isMobile = false }) => {
     const totalActive = selectedTypes.length + selectedLocations.length + selectedDepts.length;
 
     const filteredLocations = locations.filter(l =>
-        l.city.toLowerCase().includes(locationSearch.toLowerCase())
+        l.toLowerCase().includes(locationSearch.toLowerCase())
     );
 
     return (
@@ -101,16 +111,15 @@ const SidebarFilters = ({ onFiltersChange, onClose, isMobile = false }) => {
                         />
                     </div>
                     {filteredLocations.map(loc => (
-                        <label key={loc.city} className="filter-option">
+                        <label key={loc} className="filter-option">
                             <input
                                 type="checkbox"
-                                checked={selectedLocations.includes(loc.city)}
-                                onChange={() => toggleItem(selectedLocations, setSelectedLocations, loc.city)}
+                                checked={selectedLocations.includes(loc)}
+                                onChange={() => toggleItem(selectedLocations, setSelectedLocations, loc)}
                                 className="custom-checkbox"
                             />
                             <span className="checkmark" />
-                            <span className="filter-option__label">{loc.city}</span>
-                            <span className="filter-option__count">{loc.count}</span>
+                            <span className="filter-option__label">{loc}</span>
                         </label>
                     ))}
                 </FilterSection>

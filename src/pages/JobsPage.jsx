@@ -17,6 +17,7 @@ const JobsPage = () => {
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     const [selectedJob, setSelectedJob] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [sidebarFilters, setSidebarFilters] = useState({ types: [], locations: [], departments: [] });
     const [backendJobs, setBackendJobs] = useState([]);
 
     useEffect(() => {
@@ -60,7 +61,10 @@ const JobsPage = () => {
     const allJobs = [...backendJobs, ...mockJobs];
 
     const displayedJobs = allJobs.filter(j => {
+        // Industry Filter
         const matchesIndustry = industry === 'all' || j.industry?.toLowerCase().includes(industry.toLowerCase());
+
+        // Search Filter
         const searchLower = searchQuery.toLowerCase();
         const matchesSearch = !searchQuery ||
             j.title?.toLowerCase().includes(searchLower) ||
@@ -68,7 +72,12 @@ const JobsPage = () => {
             j.location?.toLowerCase().includes(searchLower) ||
             j.skills?.some(skill => skill.toLowerCase().includes(searchLower));
 
-        return matchesIndustry && matchesSearch;
+        // Sidebar Filters
+        const matchesType = sidebarFilters.types.length === 0 || sidebarFilters.types.includes(j.type);
+        const matchesLocation = sidebarFilters.locations.length === 0 || sidebarFilters.locations.some(loc => j.location?.toLowerCase().includes(loc.toLowerCase()));
+        const matchesDept = sidebarFilters.departments.length === 0 || sidebarFilters.departments.includes(j.department);
+
+        return matchesIndustry && matchesSearch && matchesType && matchesLocation && matchesDept;
     });
 
     const handleApply = (job) => {
@@ -89,7 +98,7 @@ const JobsPage = () => {
 
             <div className="browse-layout">
                 {/* Desktop Sidebar */}
-                <SidebarFilters />
+                <SidebarFilters onFiltersChange={setSidebarFilters} />
 
                 {/* Mobile Filter Overlay */}
                 <AnimatePresence>
@@ -108,7 +117,11 @@ const JobsPage = () => {
                                 exit={{ x: -300 }}
                                 transition={{ type: 'tween' }}
                             >
-                                <SidebarFilters isMobile onClose={() => setShowMobileFilters(false)} />
+                                <SidebarFilters
+                                    isMobile
+                                    onClose={() => setShowMobileFilters(false)}
+                                    onFiltersChange={setSidebarFilters}
+                                />
                             </motion.div>
                         </>
                     )}

@@ -143,16 +143,7 @@ const LoginPage = () => {
                         </button>
                     </form>
 
-                    <div className="auth-divider"><span>or continue with</span></div>
 
-                    <div className="social-auth">
-                        <button className="social-btn">
-                            <span>G</span> Google
-                        </button>
-                        <button className="social-btn">
-                            <span>in</span> LinkedIn
-                        </button>
-                    </div>
 
                     <p className="auth-footer-text">
                         Don't have an account?{' '}
