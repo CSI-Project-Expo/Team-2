@@ -12,13 +12,34 @@ const LoginPage = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setTimeout(() => {
+        try {
+            const res = await fetch('http://localhost:5000/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                localStorage.setItem('userInfo', JSON.stringify(data));
+                localStorage.setItem('token', data.token);
+                if (data.role === 'recruiter') {
+                    navigate('/dashboard/recruiter');
+                } else {
+                    navigate('/dashboard/student');
+                }
+            } else {
+                alert(data.message || 'Login failed');
+            }
+        } catch (error) {
+            console.error('Login error', error);
+            alert('Something went wrong. Make sure backend is running.');
+        } finally {
             setLoading(false);
-            navigate('/dashboard/student');
-        }, 1500);
+        }
     };
 
     return (

@@ -148,8 +148,8 @@
     display: flex;
     flex-direction: column;
     gap: 28px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
-    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
     position: relative;
     z-index: 2;
 }
@@ -478,7 +478,7 @@
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .auth-left {
         display: none;
     }
@@ -489,9 +489,17 @@
     }
 
     .auth-card {
+        max-width: 480px;
+        padding: 32px 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .auth-card {
         padding: 28px 20px;
     }
 }
+
 .auth-page::before {
     content: "HIRESPHERE";
     position: absolute;
@@ -504,12 +512,13 @@
     font-size: 1.6rem;
     color: #111;
 }
+
 .auth-page::after {
     content: "";
     position: absolute;
     width: 450px;
     height: 450px;
-    background: radial-gradient(circle, rgba(255,215,0,0.18), transparent 70%);
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.18), transparent 70%);
     top: -120px;
     right: -120px;
     z-index: 0;

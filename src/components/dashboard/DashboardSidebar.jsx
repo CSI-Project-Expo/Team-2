@@ -30,8 +30,23 @@ const adminNav = [
 ];
 
 const DashboardSidebar = ({ role = 'student' }) => {
-    const location = useLocation();
     const navigate = useNavigate();
+
+    const [user, setUser] = React.useState(null);
+
+    React.useEffect(() => {
+        const storedUser = localStorage.getItem('userInfo');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, [location]);
+
+    const handleLogout = () => {
+        localStorage.removeItem('userInfo');
+        localStorage.removeItem('token');
+        setUser(null);
+        navigate('/');
+    };
 
     const navItems = role === 'student' ? studentNav : role === 'recruiter' ? recruiterNav : adminNav;
     const roleLabel = role === 'student' ? '🎓 Student' : role === 'recruiter' ? '🏢 Recruiter' : '🛡️ Admin';
@@ -46,9 +61,9 @@ const DashboardSidebar = ({ role = 'student' }) => {
 
             {/* Profile Snippet */}
             <div className="ds-profile">
-                <div className="ds-avatar">V</div>
+                <div className="ds-avatar">{user?.name ? user.name.charAt(0).toUpperCase() : 'U'}</div>
                 <div className="ds-profile-info">
-                    <div className="ds-name">Vaishakh B.</div>
+                    <div className="ds-name">{user?.name || 'User'}</div>
                     <div className="ds-role-tag">{roleLabel}</div>
                 </div>
             </div>
@@ -85,7 +100,7 @@ const DashboardSidebar = ({ role = 'student' }) => {
             <div className="ds-divider" />
 
             {/* Logout */}
-            <button className="ds-nav-item ds-logout" onClick={() => navigate('/')}>
+            <button className="ds-nav-item ds-logout" onClick={handleLogout}>
                 <span className="ds-nav-icon"><FiLogOut size={18} /></span>
                 <span>Logout</span>
             </button>

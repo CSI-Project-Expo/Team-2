@@ -13,8 +13,22 @@ const Navbar = ({ variant = 'landing' }) => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    // Mock auth state
-    const [user] = useState(null); // null = not logged in
+    // Authentication state from localStorage
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('userInfo');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, [location]); // re-check on route change
+
+    const handleLogout = () => {
+        localStorage.removeItem('userInfo');
+        localStorage.removeItem('token');
+        setUser(null);
+        navigate('/');
+    };
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 20);
@@ -78,14 +92,17 @@ const Navbar = ({ variant = 'landing' }) => {
                         </button>
 
                         {user ? (
-                            <div className="user-avatar">
-                                <div className="avatar-circle">V</div>
-                                <FiChevronDown size={14} />
+                            <div className="user-avatar-group" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <div className="user-avatar">
+                                    <div className="avatar-circle">{user.name ? user.name.charAt(0).toUpperCase() : 'U'}</div>
+                                    <span style={{ color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: '500' }}>{user.name}</span>
+                                </div>
+                                <button onClick={handleLogout} className="btn btn-ghost btn-sm">Logout</button>
                             </div>
                         ) : (
                             <>
                                 <Link to="/login" className="btn btn-ghost btn-sm">Login</Link>
-                                <Link to="/register" className="btn btn-gold btn-sm">Register</Link>
+                                <Link to="/register" className="btn btn-gold btn-sm">Sign Up</Link>
                             </>
                         )}
 
@@ -112,8 +129,14 @@ const Navbar = ({ variant = 'landing' }) => {
                             </Link>
                         ))}
                         <div className="mobile-menu__actions">
-                            <Link to="/login" className="btn btn-ghost" style={{ flex: 1, justifyContent: 'center' }}>Login</Link>
-                            <Link to="/register" className="btn btn-gold" style={{ flex: 1, justifyContent: 'center' }}>Register</Link>
+                            {user ? (
+                                <button onClick={handleLogout} className="btn btn-ghost" style={{ flex: 1, justifyContent: 'center' }}>Logout</button>
+                            ) : (
+                                <>
+                                    <Link to="/login" className="btn btn-ghost" style={{ flex: 1, justifyContent: 'center' }}>Login</Link>
+                                    <Link to="/register" className="btn btn-gold" style={{ flex: 1, justifyContent: 'center' }}>Sign Up</Link>
+                                </>
+                            )}
                         </div>
                     </motion.div>
                 )}

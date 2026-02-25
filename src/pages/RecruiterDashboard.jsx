@@ -10,12 +10,7 @@ import { useResume } from '../context/ResumeContext';
 import './Dashboard.css';
 import './RecruiterDashboard.css';
 
-const jobPostings = [
-    { title: 'Senior Frontend Engineer', applicants: 89, status: 'Active', posted: '2d ago', requiredSkills: ['React', 'TypeScript', 'CSS', 'Redux'] },
-    { title: 'Backend Developer', applicants: 64, status: 'Active', posted: '5d ago', requiredSkills: ['Java', 'Spring Boot', 'Kafka', 'PostgreSQL'] },
-    { title: 'Product Designer', applicants: 52, status: 'Paused', posted: '1w ago', requiredSkills: ['Figma', 'UI/UX', 'Prototyping', 'Design Systems'] },
-    { title: 'Data Analyst', applicants: 42, status: 'Active', posted: '1w ago', requiredSkills: ['Python', 'SQL', 'TensorFlow', 'ML'] },
-];
+// Static dummy removed in favor of API
 
 const ScoreBadge = ({ score }) => {
     const color = score >= 80 ? '#48C78E' : score >= 65 ? '#FFD700' : '#FF5050';
@@ -33,6 +28,29 @@ const RecruiterDashboard = () => {
     const [showPostModal, setShowPostModal] = useState(false);
     const [newJobs, setNewJobs] = useState([]);
     const [toast, setToast] = useState(null);
+    const [fetchedJobs, setFetchedJobs] = useState([]);
+
+    React.useEffect(() => {
+        const fetchJobs = async () => {
+            try {
+                // Using GET /jobs as requested, but ideally should be GET /api/jobs/recruiter if token available
+                const token = localStorage.getItem('token');
+                const headers = token ? { Authorization: `Bearer ${token}` } : {};
+                const res = await fetch('http://localhost:5000/api/jobs/recruiter', { headers }); // using recruiter endpoint to get jobs with applicants
+                if (res.ok) {
+                    const data = await res.json();
+                    setFetchedJobs(data);
+                } else {
+                    const resAll = await fetch('http://localhost:5000/api/jobs');
+                    const dataAll = await resAll.json();
+                    setFetchedJobs(dataAll);
+                }
+            } catch (err) {
+                console.error("Failed to fetch jobs:", err);
+            }
+        };
+        fetchJobs();
+    }, []);
 
     const handlePostJob = (job) => {
         setNewJobs(prev => [job, ...prev]);
@@ -55,16 +73,24 @@ const RecruiterDashboard = () => {
         { icon: <FiTrendingUp />, label: 'Views This Week', value: 1843, color: '#AC6CFF' },
     ];
 
-    // Static fallback applicants for demo when no context data
-    const staticApplicants = [
-        { studentName: 'Priya S.', job: { title: 'Senior Frontend Eng', company: 'You', color: '#4285F4' }, aiScore: 91, appliedAt: '20 Feb', resumeFileName: 'priya_resume.pdf', resumeUrl: null },
-        { studentName: 'Rahul M.', job: { title: 'Backend Developer', company: 'You', color: '#3395FF' }, aiScore: 78, appliedAt: '19 Feb', resumeFileName: 'rahul_cv.pdf', resumeUrl: null },
-        { studentName: 'Ananya P.', job: { title: 'Product Designer', company: 'You', color: '#FF7262' }, aiScore: 85, appliedAt: '18 Feb', resumeFileName: 'ananya_portfolio.pdf', resumeUrl: null },
-        { studentName: 'Karthik V.', job: { title: 'Data Analyst', company: 'You', color: '#48C78E' }, aiScore: 62, appliedAt: '17 Feb', resumeFileName: 'karthik_resume.docx', resumeUrl: null },
-        { studentName: 'Divya R.', job: { title: 'Senior Frontend Eng', company: 'You', color: '#AC6CFF' }, aiScore: 70, appliedAt: '16 Feb', resumeFileName: 'divya_cv.pdf', resumeUrl: null },
-    ].sort((a, b) => b.aiScore - a.aiScore);
+    // Process fetched jobs to applications array
+    let apiApplications = [];
+    fetchedJobs.forEach(job => {
+        if (job.applicants) {
+            job.applicants.forEach((app, idx) => {
+                apiApplications.push({
+                    studentName: app.student?.name || 'Applicant',
+                    job: { title: job.title, company: job.companyName || 'You', color: '#4285F4', skills: job.requirements },
+                    aiScore: 85 - (idx * 5) > 40 ? 85 - (idx * 5) : 45, // mock score if actual AI not present
+                    appliedAt: new Date(app.appliedAt).toLocaleDateString(),
+                    resumeFileName: app.student?.resumeUrl ? app.student.resumeUrl.split('/').pop() : 'resume.pdf',
+                    resumeUrl: app.student?.resumeUrl ? `http://localhost:5000${app.student.resumeUrl}` : null,
+                });
+            });
+        }
+    });
 
-    const displayApps = filteredApps.length > 0 ? filteredApps : staticApplicants;
+    const displayApps = filteredApps.length > 0 ? filteredApps : apiApplications;
 
     return (
         <div className="dashboard-layout">
@@ -122,14 +148,14 @@ const RecruiterDashboard = () => {
                                     <span className="job-row-status status-active">Active</span>
                                 </div>
                             ))}
-                            {jobPostings.map((job, i) => (
+                            {fetchedJobs.map((job, i) => (
                                 <div key={i} className="job-row">
                                     <div className="job-row-info">
                                         <div className="job-row-title">{job.title}</div>
-                                        <div className="job-row-meta">{job.applicants} applicants · {job.posted}</div>
+                                        <div className="job-row-meta">{job.applicants ? job.applicants.length : 0} applicants · {new Date(job.createdAt).toLocaleDateString()}</div>
                                     </div>
-                                    <span className={`job-row-status ${job.status === 'Active' ? 'status-active' : 'status-paused'}`}>
-                                        {job.status}
+                                    <span className={`job-row-status status-active`}>
+                                        Active
                                     </span>
                                 </div>
                             ))}
@@ -195,8 +221,8 @@ const RecruiterDashboard = () => {
                                 onChange={e => setSelectedJob(e.target.value)}
                             >
                                 <option value="all">All Jobs</option>
-                                {jobPostings.map(j => (
-                                    <option key={j.title} value={j.title}>{j.title}</option>
+                                {fetchedJobs.map(j => (
+                                    <option key={j._id} value={j.title}>{j.title}</option>
                                 ))}
                             </select>
                         </div>

@@ -52,12 +52,34 @@ const RegisterPage = () => {
         setErrors(prev => ({ ...prev, [key]: err }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setTimeout(() => {
-            navigate(role === 'student' ? '/dashboard/student' : '/dashboard/recruiter');
-        }, 1500);
+        try {
+            const res = await fetch('http://localhost:5000/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...formData, role })
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                localStorage.setItem('userInfo', JSON.stringify(data));
+                localStorage.setItem('token', data.token);
+                if (data.role === 'recruiter') {
+                    navigate('/dashboard/recruiter');
+                } else {
+                    navigate('/dashboard/student');
+                }
+            } else {
+                alert(data.message || 'Registration failed');
+            }
+        } catch (error) {
+            console.error('Registration error', error);
+            alert('Something went wrong. Make sure backend is running.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -117,8 +139,8 @@ const RegisterPage = () => {
                             >
                                 <div className="auth-card__header">
                                     <center>
-                                    <h1 className="auth-card__title">"I am a, "</h1>
-                                    <p className="auth-card__sub">Choose your role to get started</p>
+                                        <h1 className="auth-card__title">"I am a, "</h1>
+                                        <p className="auth-card__sub">Choose your role to get started</p>
                                     </center>
                                 </div>
 
@@ -160,19 +182,19 @@ const RegisterPage = () => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                         >
-                            <div className="auth-card__header">
-                                <h1
-                                    className="auth-card__title"
-                                    style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                                >
-                                    {role === 'student' ? <FiUser /> : <FiBriefcase />}
-                                    {role === 'student' ? 'Student' : 'Recruiter'} Sign Up
-                                </h1>
-                                <p className="auth-card__sub">
-                                    Fill in your details to create your account
-                                </p>
-                            </div>
+                            >
+                                <div className="auth-card__header">
+                                    <h1
+                                        className="auth-card__title"
+                                        style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                                    >
+                                        {role === 'student' ? <FiUser /> : <FiBriefcase />}
+                                        {role === 'student' ? 'Student' : 'Recruiter'} Sign Up
+                                    </h1>
+                                    <p className="auth-card__sub">
+                                        Fill in your details to create your account
+                                    </p>
+                                </div>
                                 <form onSubmit={handleSubmit} className="auth-form">
                                     {fields.map(f => (
                                         <div key={f.key} className="form-group">

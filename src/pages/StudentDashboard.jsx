@@ -26,6 +26,14 @@ const ProfileItems = [
 
 const StudentDashboard = () => {
     const { applications } = useResume();
+    const [user, setUser] = useState(null);
+
+    React.useEffect(() => {
+        const storedUser = localStorage.getItem('userInfo');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, []);
     const [uploadModal, setUploadModal] = useState(false);
     const [uploadFile, setUploadFile] = useState(null);
     const [uploadDone, setUploadDone] = useState(false);
@@ -51,35 +59,63 @@ const StudentDashboard = () => {
         if (file) setUploadFile(file);
     };
 
-    const handleDone = () => {
-        setUploadDone(true);
-        setTimeout(() => {
-            setUploadModal(false);
-            setUploadDone(false);
-            setUploadFile(null);
-        }, 1800);
+    const handleDone = async () => {
+        if (!uploadFile) return;
+
+        const formData = new FormData();
+        formData.append('resume', uploadFile);
+
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch('http://localhost:5000/api/upload', {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                body: formData,
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                console.log('Resume uploaded successfully', data);
+                // Update local storage user info
+                if (user) {
+                    const updatedUser = { ...user, resumeUrl: data.resumeUrl };
+                    localStorage.setItem('userInfo', JSON.stringify(updatedUser));
+                    setUser(updatedUser);
+                }
+                setUploadDone(true);
+                setTimeout(() => {
+                    setUploadModal(false);
+                    setUploadDone(false);
+                    setUploadFile(null);
+                }, 1800);
+            } else {
+                const data = await res.json();
+                alert(data.message || 'Failed to upload resume');
+            }
+        } catch (error) {
+            console.error('Upload Error', error);
+            alert('Something went wrong during file upload.');
+        }
     };
 
-    // Merge context applications with static fallback for demo
-    const staticApps = [
-        { company: 'Google', role: 'Software Engineer', status: 'Shortlisted', date: '20 Feb', color: '#4285F4', logo: 'G' },
-        { company: 'Razorpay', role: 'Frontend Dev', status: 'Applied', date: '18 Feb', color: '#3395FF', logo: 'R' },
-        { company: 'Microsoft', role: 'UX Researcher', status: 'Under Review', date: '15 Feb', color: '#00A4EF', logo: 'M' },
-        { company: 'Swiggy', role: 'Product Manager', status: 'Rejected', date: '10 Feb', color: '#FC8019', logo: 'S' },
-    ];
+    const [fetchedJobs, setFetchedJobs] = useState([]);
 
-    const recentApps = applications.length > 0
-        ? applications.slice().reverse().slice(0, 6).map(a => ({
-            company: a.job.company,
-            role: a.job.title,
-            status: a.status,
-            date: a.appliedAt,
-            color: a.job.color,
-            logo: a.job.logo,
-            aiScore: a.aiScore,
-            location: a.job.location,
-        }))
-        : staticApps;
+    React.useEffect(() => {
+        const fetchJobs = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/jobs');
+                const data = await res.json();
+                setFetchedJobs(data);
+            } catch (err) {
+                console.error("Failed to fetch jobs:", err);
+            }
+        };
+        fetchJobs();
+    }, []);
+
+    const displayJobs = fetchedJobs.length > 0 ? fetchedJobs : [];
 
     return (
         <div className="dashboard-layout">
@@ -88,7 +124,7 @@ const StudentDashboard = () => {
                 {/* Header */}
                 <div className="dashboard-header">
                     <div>
-                        <h1 className="dashboard-title">Good morning, <span className="text-gold">Vaishakh</span> 👋</h1>
+                        <h1 className="dashboard-title">Good morning, <span className="text-gold">{user?.name?.split(' ')[0] || 'Student'}</span> 👋</h1>
                         <p className="dashboard-subtitle">Here's what's happening with your job search today.</p>
                     </div>
                     <button className="btn btn-gold btn-sm" onClick={() => setUploadModal(true)}>
@@ -134,17 +170,17 @@ const StudentDashboard = () => {
                             )}
                         </h3>
                         <div className="applications-list">
-                            {recentApps.map((app, i) => (
+                            {displayJobs.map((job, i) => (
                                 <div key={i} className="application-row">
-                                    <div className="app-logo" style={{ background: app.color + '20', color: app.color }}>
-                                        {app.logo}
+                                    <div className="app-logo" style={{ background: '#457EFF20', color: '#457EFF' }}>
+                                        {job.companyName ? job.companyName.charAt(0).toUpperCase() : 'C'}
                                     </div>
                                     <div className="app-info">
-                                        <div className="app-company">{app.company}</div>
+                                        <div className="app-company">{job.companyName}</div>
                                         <div className="app-role">
-                                            {app.role}
-                                            {app.location && (
-                                                <span className="app-location"><FiMapPin size={10} /> {app.location}</span>
+                                            {job.title}
+                                            {job.location && (
+                                                <span className="app-location"><FiMapPin size={10} /> {job.location}</span>
                                             )}
                                         </div>
                                     </div>
@@ -152,19 +188,14 @@ const StudentDashboard = () => {
                                         <span
                                             className="app-status"
                                             style={{
-                                                color: statusColor[app.status] || '#888',
-                                                background: (statusColor[app.status] || '#888') + '15',
-                                                border: `1px solid ${(statusColor[app.status] || '#888')}30`
+                                                color: '#FFD700',
+                                                background: '#FFD70015',
+                                                border: `1px solid #FFD70030`
                                             }}
                                         >
-                                            {app.status}
+                                            Available
                                         </span>
-                                        <div className="app-date">{app.date}</div>
-                                        {app.aiScore && (
-                                            <div className="app-ai-score">
-                                                AI: <strong style={{ color: '#FFD700' }}>{app.aiScore}%</strong>
-                                            </div>
-                                        )}
+                                        <div className="app-date">{new Date(job.createdAt).toLocaleDateString()}</div>
                                     </div>
                                 </div>
                             ))}
