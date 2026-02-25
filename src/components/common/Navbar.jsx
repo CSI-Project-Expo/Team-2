@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiSun, FiMoon, FiMenu, FiX, FiSearch, FiBell, FiChevronDown } from 'react-icons/fi';
-import { useTheme } from '../../context/ThemeContext';
+
 import './Navbar.css';
 
 const Navbar = ({ variant = 'landing', searchQuery, onSearchChange }) => {
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [localSearchQuery, setLocalSearchQuery] = useState('');
-    const { isDark, toggleTheme } = useTheme();
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -98,10 +97,6 @@ const Navbar = ({ variant = 'landing', searchQuery, onSearchChange }) => {
 
                     {/* Right Actions */}
                     <div className="navbar__actions">
-                        <button className="theme-toggle" onClick={toggleTheme} title="Toggle theme">
-                            {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
-                        </button>
-
                         {user ? (
                             <div className="user-avatar-group" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <Link to={user.role === 'recruiter' ? '/dashboard/recruiter' : '/dashboard/student'} className="user-avatar" style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>

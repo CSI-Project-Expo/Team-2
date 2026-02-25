@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ThemeProvider } from './context/ThemeContext';
+
 import { ResumeProvider } from './context/ResumeContext';
 import CursorFollower from './components/common/CursorFollower';
 
@@ -60,10 +60,8 @@ const App = () => {
 
     return (
         <ResumeProvider>
-            <ThemeProvider>
-                {location.pathname === "/" && <CursorFollower />}
-                <AppRoutes />
-            </ThemeProvider>
+            {location.pathname === "/" && <CursorFollower />}
+            <AppRoutes />
         </ResumeProvider>
     );
 };

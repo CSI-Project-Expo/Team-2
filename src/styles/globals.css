@@ -111,27 +111,7 @@
   color: var(--section-dark-text-secondary) !important;
 }
 
-/* --- Light Mode Variables --- */
-.dark-mode {
-  --bg-primary: #0B0B0B;
-  --bg-secondary: #111111;
-  --bg-tertiary: #161616;
-  --bg-card: rgba(255, 255, 255, 0.03);
-  --bg-card-hover: rgba(255, 255, 255, 0.06);
 
-  --text-primary: #FFFFFF;
-  --text-secondary: #AAAAAA;
-  --text-muted: #666666;
-
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 215, 0, 0.15);
-  --glass-border-hover: rgba(255, 215, 0, 0.4);
-  --border-light: rgba(255, 255, 255, 0.08);
-  --bg-surface: rgba(255, 255, 255, 0.02);
-
-  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.4);
-  --shadow-card-hover: 0 20px 50px rgba(0, 0, 0, 0.6);
-}
 
 /* ============================================
    RESET & BASE
