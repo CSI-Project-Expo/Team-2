@@ -93,10 +93,10 @@ const Navbar = ({ variant = 'landing' }) => {
 
                         {user ? (
                             <div className="user-avatar-group" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <div className="user-avatar">
+                                <Link to={user.role === 'recruiter' ? '/dashboard/recruiter' : '/dashboard/student'} className="user-avatar" style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     <div className="avatar-circle">{user.name ? user.name.charAt(0).toUpperCase() : 'U'}</div>
-                                    <span style={{ color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: '500' }}>{user.name}</span>
-                                </div>
+                                    <span style={{ color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: '500', transition: 'color 0.2s' }}>{user.name}</span>
+                                </Link>
                                 <button onClick={handleLogout} className="btn btn-ghost btn-sm">Logout</button>
                             </div>
                         ) : (
