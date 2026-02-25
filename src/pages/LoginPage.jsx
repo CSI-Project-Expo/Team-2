@@ -44,6 +44,11 @@ const LoginPage = () => {
 
     return (
         <div className="auth-page">
+            {/* Top Left Logo */}
+            <Link to="/" className="auth-logo-top">
+                <span className="text-gold">HIRE</span>SPHERE
+            </Link>
+
             {/* Left Panel */}
             <div className="auth-left">
                 <ThreeScene />

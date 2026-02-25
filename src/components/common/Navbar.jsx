@@ -5,13 +5,24 @@ import { FiSun, FiMoon, FiMenu, FiX, FiSearch, FiBell, FiChevronDown } from 'rea
 import { useTheme } from '../../context/ThemeContext';
 import './Navbar.css';
 
-const Navbar = ({ variant = 'landing' }) => {
+const Navbar = ({ variant = 'landing', searchQuery, onSearchChange }) => {
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [localSearchQuery, setLocalSearchQuery] = useState('');
     const { isDark, toggleTheme } = useTheme();
     const location = useLocation();
     const navigate = useNavigate();
+
+    // Use controlled props if provided, otherwise use local state
+    const currentSearchQuery = searchQuery !== undefined ? searchQuery : localSearchQuery;
+    const handleSearchChange = (e) => {
+        const val = e.target.value;
+        if (onSearchChange) {
+            onSearchChange(val);
+        } else {
+            setLocalSearchQuery(val);
+        }
+    };
 
     // Authentication state from localStorage
     const [user, setUser] = useState(null);
@@ -66,8 +77,8 @@ const Navbar = ({ variant = 'landing' }) => {
                             <input
                                 type="text"
                                 placeholder="Search jobs here..."
-                                value={searchQuery}
-                                onChange={e => setSearchQuery(e.target.value)}
+                                value={currentSearchQuery}
+                                onChange={handleSearchChange}
                                 className="search-input"
                             />
                         </div>

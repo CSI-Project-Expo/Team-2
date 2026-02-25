@@ -16,6 +16,7 @@ const JobsPage = () => {
     const [viewMode, setViewMode] = useState('grid');
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     const [selectedJob, setSelectedJob] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
     const [backendJobs, setBackendJobs] = useState([]);
 
     useEffect(() => {
@@ -58,9 +59,17 @@ const JobsPage = () => {
 
     const allJobs = [...backendJobs, ...mockJobs];
 
-    const displayedJobs = industry === 'all'
-        ? allJobs
-        : allJobs.filter(j => j.industry?.toLowerCase().includes(industry));
+    const displayedJobs = allJobs.filter(j => {
+        const matchesIndustry = industry === 'all' || j.industry?.toLowerCase().includes(industry.toLowerCase());
+        const searchLower = searchQuery.toLowerCase();
+        const matchesSearch = !searchQuery ||
+            j.title?.toLowerCase().includes(searchLower) ||
+            j.company?.toLowerCase().includes(searchLower) ||
+            j.location?.toLowerCase().includes(searchLower) ||
+            j.skills?.some(skill => skill.toLowerCase().includes(searchLower));
+
+        return matchesIndustry && matchesSearch;
+    });
 
     const handleApply = (job) => {
         setSelectedJob(job);
@@ -68,7 +77,11 @@ const JobsPage = () => {
 
     return (
         <div className="browse-page">
-            <Navbar variant="browse" />
+            <Navbar
+                variant="browse"
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+            />
 
             <div className="browse-page__top" style={{ paddingTop: 'var(--nav-height)' }}>
                 <IndustryFilterBar selected={industry} onSelect={setIndustry} />
