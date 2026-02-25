@@ -16,7 +16,7 @@
     "react": "latest",
     "react-countup": "latest",
     "react-dom": "latest",
-    "react-icons": "latest",
+    "react-icons": "^5.5.0",
     "react-intersection-observer": "latest",
     "react-router-dom": "latest",
     "three": "latest"

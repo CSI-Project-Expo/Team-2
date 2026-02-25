@@ -192,12 +192,12 @@ export const mockJobs = [
 ];
 
 export const jobCategories = [
-    { id: 1, name: 'Technology', icon: '💻', count: '45K+', color: '#457EFF' },
-    { id: 2, name: 'Finance', icon: '📈', count: '12K+', color: '#FFD700' },
-    { id: 3, name: 'Design', icon: '🎨', count: '8K+', color: '#FF7262' },
-    { id: 4, name: 'Marketing', icon: '📣', count: '15K+', color: '#48C78E' },
-    { id: 5, name: 'Healthcare', icon: '🏥', count: '9K+', color: '#F06C9B' },
-    { id: 6, name: 'Education', icon: '🎓', count: '6K+', color: '#AC6CFF' },
-    { id: 7, name: 'Operations', icon: '⚙️', count: '11K+', color: '#F5A623' },
-    { id: 8, name: 'Legal', icon: '⚖️', count: '3K+', color: '#4ECDC4' },
+    { id: 1, name: 'Technology', icon: 'tech', count: '45K+', color: '#457EFF' },
+    { id: 2, name: 'Finance', icon: 'finance', count: '12K+', color: '#FFD700' },
+    { id: 3, name: 'Design', icon: 'design', count: '8K+', color: '#FF7262' },
+    { id: 4, name: 'Marketing', icon: 'marketing', count: '15K+', color: '#48C78E' },
+    { id: 5, name: 'Healthcare', icon: 'health', count: '9K+', color: '#F06C9B' },
+    { id: 6, name: 'Education', icon: 'education', count: '6K+', color: '#AC6CFF' },
+    { id: 7, name: 'Operations', icon: 'operations', count: '11K+', color: '#F5A623' },
+    { id: 8, name: 'Legal', icon: 'legal', count: '3K+', color: '#4ECDC4' },
 ];

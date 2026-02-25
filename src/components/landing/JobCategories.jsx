@@ -2,8 +2,28 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { jobCategories } from '../../data/mockJobs';
-import { FiArrowRight } from 'react-icons/fi';
+import {
+    FiArrowRight,
+    FiCpu,
+    FiTrendingUp,
+    FiPenTool,
+    FiHeart,
+    FiBookOpen,
+    FiSettings,
+    FiBriefcase
+} from 'react-icons/fi';
 import './JobCategories.css';
+
+const iconMap = {
+    tech: <FiCpu size={24} />,
+    finance: <FiTrendingUp size={24} />,
+    design: <FiPenTool size={24} />,
+    marketing: <FiTrendingUp size={24} />,
+    health: <FiHeart size={24} />,
+    education: <FiBookOpen size={24} />,
+    operations: <FiSettings size={24} />,
+    legal: <FiBriefcase size={24} />,
+};
 
 const JobCategories = () => {
     return (
@@ -34,14 +54,32 @@ const JobCategories = () => {
                             viewport={{ once: true }}
                             transition={{ duration: 0.4, delay: i * 0.07 }}
                         >
-                            <Link to={`/jobs?category=${cat.name}`} className="category-card glass-card">
-                                <div className="category-card__icon" style={{ background: cat.color + '18', color: cat.color }}>
-                                    <span className="cat-emoji">{cat.icon}</span>
+                            <Link
+                                to={`/jobs?category=${cat.name}`}
+                                className="category-card glass-card"
+                            >
+                                <div
+                                    className="category-card__icon"
+                                    style={{
+                                        background: cat.color + '18',
+                                        color: cat.color
+                                    }}
+                                >
+                                    {iconMap[cat.icon] || <FiBriefcase size={24} />}
                                 </div>
+
                                 <div className="category-card__info">
-                                    <h3 className="category-card__name">{cat.name}</h3>
-                                    <p className="category-card__count" style={{ color: cat.color }}>{cat.count} jobs</p>
+                                    <h3 className="category-card__name">
+                                        {cat.name}
+                                    </h3>
+                                    <p
+                                        className="category-card__count"
+                                        style={{ color: cat.color }}
+                                    >
+                                        {cat.count} jobs
+                                    </p>
                                 </div>
+
                                 <FiArrowRight className="category-card__arrow" />
                             </Link>
                         </motion.div>

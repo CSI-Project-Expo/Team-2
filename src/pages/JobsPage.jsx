@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FiFilter, FiGrid, FiList, FiHome } from 'react-icons/fi';
+import { FiFilter, FiGrid, FiList, FiHome, FiSearch } from 'react-icons/fi';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
 import IndustryFilterBar from '../components/browse/IndustryFilterBar';
@@ -153,7 +153,7 @@ const JobsPage = () => {
 
                     {displayedJobs.length === 0 && (
                         <div className="no-results">
-                            <span>🔍</span>
+                            <FiSearch size={40} className="no-results__icon" />
                             <p>No jobs found for this filter. Try a different category.</p>
                         </div>
                     )}

@@ -1,6 +1,31 @@
 import React, { useState } from 'react';
 import { industries } from '../../data/mockCompanies';
+import {
+    FiGlobe,
+    FiBriefcase,
+    FiCreditCard,
+    FiShoppingCart,
+    FiTrendingUp,
+    FiBookOpen,
+    FiActivity,
+    FiPackage,
+    FiCpu,
+    FiCloud
+} from 'react-icons/fi';
 import './IndustryFilterBar.css';
+
+const iconMap = {
+    globe: <FiGlobe size={18} />,
+    briefcase: <FiBriefcase size={18} />,
+    creditcard: <FiCreditCard size={18} />,
+    cart: <FiShoppingCart size={18} />,
+    trending: <FiTrendingUp size={18} />,
+    book: <FiBookOpen size={18} />,
+    activity: <FiActivity size={18} />,
+    package: <FiPackage size={18} />,
+    cpu: <FiCpu size={18} />,
+    cloud: <FiCloud size={18} />,
+};
 
 const IndustryFilterBar = ({ onSelect, selected = 'all' }) => {
     return (
@@ -14,7 +39,9 @@ const IndustryFilterBar = ({ onSelect, selected = 'all' }) => {
                             className={`industry-chip ${selected === ind.id ? 'industry-chip--active' : ''}`}
                             onClick={() => onSelect(ind.id)}
                         >
-                            <span className="industry-chip__icon">{ind.icon}</span>
+                            <span className="industry-chip__icon">
+                                {iconMap[ind.icon]}
+                            </span>
                             <div className="industry-chip__info">
                                 <span className="industry-chip__name">{ind.name}</span>
                                 <span className="industry-chip__count">{ind.count}</span>

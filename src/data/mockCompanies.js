@@ -1,3 +1,16 @@
+import {
+    FiGlobe,
+    FiBriefcase,
+    FiCreditCard,
+    FiShoppingCart,
+    FiTrendingUp,
+    FiBookOpen,
+    FiActivity,
+    FiPackage,
+    FiCpu,
+    FiCloud
+} from 'react-icons/fi';
+
 // Mock Companies Data
 export const mockCompanies = [
     {
@@ -156,16 +169,16 @@ export const mockCompanies = [
 ];
 
 export const industries = [
-    { id: 'all', name: 'All Industries', icon: '🌐', count: '12.5K+' },
-    { id: 'mnc', name: 'MNCs', icon: '🏢', count: '2.2K+' },
-    { id: 'fintech', name: 'Fintech', icon: '💳', count: '1.8K+' },
-    { id: 'fmcg', name: 'FMCG & Retail', icon: '🛒', count: '3.1K+' },
-    { id: 'startup', name: 'Startups', icon: '🚀', count: '4.5K+' },
-    { id: 'edtech', name: 'Edtech', icon: '📚', count: '890+' },
-    { id: 'healthtech', name: 'Healthtech', icon: '🏥', count: '650+' },
-    { id: 'ecommerce', name: 'E-commerce', icon: '🛍️', count: '1.3K+' },
-    { id: 'gaming', name: 'Gaming', icon: '🎮', count: '420+' },
-    { id: 'saas', name: 'SaaS', icon: '☁️', count: '2.1K+' },
+    { id: 'all', name: 'All Industries', icon: 'globe', count: '12.5K+' },
+    { id: 'mnc', name: 'MNCs', icon: 'briefcase', count: '2.2K+' },
+    { id: 'fintech', name: 'Fintech', icon: 'creditcard', count: '1.8K+' },
+    { id: 'fmcg', name: 'FMCG & Retail', icon: 'cart', count: '3.1K+' },
+    { id: 'startup', name: 'Startups', icon: 'trending', count: '4.5K+' },
+    { id: 'edtech', name: 'Edtech', icon: 'book', count: '890+' },
+    { id: 'healthtech', name: 'Healthtech', icon: 'activity', count: '650+' },
+    { id: 'ecommerce', name: 'E-commerce', icon: 'package', count: '1.3K+' },
+    { id: 'gaming', name: 'Gaming', icon: 'cpu', count: '420+' },
+    { id: 'saas', name: 'SaaS', icon: 'cloud', count: '2.1K+' },
 ];
 
 export const featuredCompanyLogos = [
