@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FiMapPin, FiBriefcase, FiClock, FiDollarSign, FiArrowRight, FiZap } from 'react-icons/fi';
+import { FiMapPin, FiBriefcase, FiClock, FiDollarSign, FiArrowRight, FiZap, FiBookmark } from 'react-icons/fi';
 import './JobCard.css';
 
 const JobCard = ({ job, onApply }) => {
@@ -9,6 +9,29 @@ const JobCard = ({ job, onApply }) => {
         type, salary, experience, skills, tags,
         posted, applicants, remote, urgent, featured
     } = job;
+
+    const [isBookmarked, setIsBookmarked] = React.useState(false);
+
+    React.useEffect(() => {
+        const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+        if (saved.some(s => s.id === job.id)) {
+            setIsBookmarked(true);
+        }
+    }, [job.id]);
+
+    const toggleBookmark = (e) => {
+        e.stopPropagation(); // prevent applying when clicking bookmark
+        const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+        if (isBookmarked) {
+            const updated = saved.filter(s => s.id !== job.id);
+            localStorage.setItem('savedJobs', JSON.stringify(updated));
+            setIsBookmarked(false);
+        } else {
+            saved.push(job);
+            localStorage.setItem('savedJobs', JSON.stringify(saved));
+            setIsBookmarked(true);
+        }
+    };
 
     return (
         <motion.div
@@ -34,9 +57,15 @@ const JobCard = ({ job, onApply }) => {
                         </div>
                     </div>
                 </div>
-                <div className="job-card__badges">
+                <div className="job-card__badges" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                     {urgent && <span className="badge badge-urgent"><FiZap size={10} /> Urgent</span>}
                     {featured && <span className="badge badge-gold">Featured</span>}
+                    <button
+                        onClick={toggleBookmark}
+                        style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: isBookmarked ? 'var(--gold-primary)' : 'var(--text-muted)', display: 'flex', alignItems: 'center' }}
+                    >
+                        <FiBookmark fill={isBookmarked ? 'var(--gold-primary)' : 'transparent'} size={18} />
+                    </button>
                 </div>
             </div>
 

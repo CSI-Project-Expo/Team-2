@@ -43,8 +43,8 @@ const AppRoutes = () => {
                 <Route path="/companies" element={<PageTransition><CompaniesPage /></PageTransition>} />
                 <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
                 <Route path="/register" element={<PageTransition><RegisterPage /></PageTransition>} />
-                <Route path="/dashboard/student" element={<PageTransition><StudentDashboard /></PageTransition>} />
-                <Route path="/dashboard/recruiter" element={<PageTransition><RecruiterDashboard /></PageTransition>} />
+                <Route path="/dashboard/student/*" element={<PageTransition><StudentDashboard /></PageTransition>} />
+                <Route path="/dashboard/recruiter/*" element={<PageTransition><RecruiterDashboard /></PageTransition>} />
                 <Route path="/dashboard/student/chat" element={<PageTransition><ChatPage role="student" /></PageTransition>} />
                 <Route path="/dashboard/recruiter/chat" element={<PageTransition><ChatPage role="recruiter" /></PageTransition>} />
                 <Route path="/dashboard/admin" element={<PageTransition><AdminDashboard /></PageTransition>} />

@@ -5,11 +5,9 @@ import './DashboardSidebar.css';
 
 const studentNav = [
     { icon: <FiHome size={18} />, label: 'Overview', path: '/dashboard/student' },
-    { icon: <FiUser size={18} />, label: 'Profile', path: '/dashboard/student/profile' },
     { icon: <FiFileText size={18} />, label: 'Resume', path: '/dashboard/student/resume' },
     { icon: <FiBriefcase size={18} />, label: 'Applications', path: '/dashboard/student/applications' },
     { icon: <FiBookmark size={18} />, label: 'Saved Jobs', path: '/dashboard/student/saved' },
-    { icon: <FiMessageCircle size={18} />, label: 'Messages', path: '/dashboard/student/chat' },
     { icon: <FiSettings size={18} />, label: 'Settings', path: '/dashboard/student/settings' },
 ];
 
@@ -17,7 +15,6 @@ const recruiterNav = [
     { icon: <FiHome size={18} />, label: 'Overview', path: '/dashboard/recruiter' },
     { icon: <FiBriefcase size={18} />, label: 'Post Job', path: '/dashboard/recruiter/post-job' },
     { icon: <FiUsers size={18} />, label: 'Applicants', path: '/dashboard/recruiter/applicants' },
-    { icon: <FiMessageCircle size={18} />, label: 'Chat', path: '/dashboard/recruiter/chat' },
     { icon: <FiFileText size={18} />, label: 'Question Bank', path: '/dashboard/recruiter/questions' },
     { icon: <FiSettings size={18} />, label: 'Settings', path: '/dashboard/recruiter/settings' },
 ];
@@ -88,9 +85,6 @@ const DashboardSidebar = ({ role = 'student' }) => {
                     >
                         <span className="ds-nav-icon">{item.icon}</span>
                         <span>{item.label}</span>
-                        {item.label === 'Messages' && (
-                            <span className="ds-badge">3</span>
-                        )}
                     </Link>
                 ))}
             </nav>
