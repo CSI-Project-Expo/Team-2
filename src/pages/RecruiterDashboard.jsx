@@ -34,13 +34,47 @@ const RecruiterDashboard = () => {
     const location = useLocation();
     const [currentView, setCurrentView] = useState('overview');
     const [user, setUser] = useState(null);
+    const [editName, setEditName] = useState('');
+    const [editEmail, setEditEmail] = useState('');
 
     useEffect(() => {
         const storedUser = localStorage.getItem('userInfo');
         if (storedUser) {
-            setUser(JSON.parse(storedUser));
+            const parsed = JSON.parse(storedUser);
+            setUser(parsed);
+            setEditName(parsed.name || '');
+            setEditEmail(parsed.email || '');
         }
     }, []);
+
+    const handleUpdateProfile = async (e) => {
+        e.preventDefault();
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch('http://localhost:5000/api/auth/profile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ name: editName, email: editEmail })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                localStorage.setItem('userInfo', JSON.stringify(data));
+                setUser(data);
+                setToast('Profile updated successfully!');
+                setTimeout(() => setToast(null), 3000);
+            } else {
+                const data = await res.json();
+                alert(`Error: ${data.message}`);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Something went wrong.');
+        }
+    };
 
     React.useEffect(() => {
         const fetchJobs = async () => {
@@ -123,22 +157,6 @@ const RecruiterDashboard = () => {
         }
     };
 
-    const sortedApps = getSortedApplications();
-
-    const filteredApps = selectedJob === 'all'
-        ? sortedApps
-        : sortedApps.filter(a => a.job.title === selectedJob);
-
-    let totalApplicantsCount = 0;
-    fetchedJobs.forEach(j => {
-        if (j.applicants) totalApplicantsCount += j.applicants.length;
-    });
-
-    const stats = [
-        { icon: <FiBriefcase />, label: 'Active Jobs', value: fetchedJobs.length + newJobs.length, color: '#FFD700' },
-        { icon: <FiUsers />, label: 'Total Applicants', value: totalApplicantsCount, color: '#457EFF' }
-    ];
-
     // Process fetched jobs to applications array
     let apiApplications = [];
     fetchedJobs.forEach(job => {
@@ -160,7 +178,21 @@ const RecruiterDashboard = () => {
         }
     });
 
-    const displayApps = filteredApps.length > 0 ? filteredApps : apiApplications;
+    const filteredApps = selectedJob === 'all'
+        ? apiApplications
+        : apiApplications.filter(a => a.job.title === selectedJob);
+
+    let totalApplicantsCount = 0;
+    fetchedJobs.forEach(j => {
+        if (j.applicants) totalApplicantsCount += j.applicants.length;
+    });
+
+    const stats = [
+        { icon: <FiBriefcase />, label: 'Active Jobs', value: fetchedJobs.length + newJobs.length, color: '#FFD700' },
+        { icon: <FiUsers />, label: 'Total Applicants', value: totalApplicantsCount, color: '#457EFF' }
+    ];
+
+    const displayApps = filteredApps.length > 0 ? filteredApps : (selectedJob === 'all' ? apiApplications : []);
 
     // Sort array descending correctly
     displayApps.sort((a, b) => b.aiScore - a.aiScore);
@@ -461,15 +493,17 @@ const RecruiterDashboard = () => {
                     <motion.div className="dash-panel glass-card" initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ maxWidth: '600px' }}>
                         <div className="settings-section" style={{ marginBottom: 30 }}>
                             <h3 style={{ marginBottom: 16, color: 'var(--text-primary)' }}>Account Information</h3>
-                            <div className="form-group" style={{ marginBottom: 16 }}>
-                                <label className="form-label">Company / Recruiter Name</label>
-                                <input type="text" className="input" defaultValue={user?.name || ''} />
-                            </div>
-                            <div className="form-group" style={{ marginBottom: 16 }}>
-                                <label className="form-label">Email Address</label>
-                                <input type="email" className="input" defaultValue={user?.email || ''} />
-                            </div>
-                            <button className="btn btn-ghost" style={{ border: '1px solid var(--border-light)' }}>Update Info</button>
+                            <form onSubmit={handleUpdateProfile}>
+                                <div className="form-group" style={{ marginBottom: 16 }}>
+                                    <label className="form-label">Company / Recruiter Name</label>
+                                    <input type="text" className="input" value={editName} onChange={e => setEditName(e.target.value)} required />
+                                </div>
+                                <div className="form-group" style={{ marginBottom: 16 }}>
+                                    <label className="form-label">Email Address</label>
+                                    <input type="email" className="input" value={editEmail} onChange={e => setEditEmail(e.target.value)} required />
+                                </div>
+                                <button type="submit" className="btn btn-ghost" style={{ border: '1px solid var(--border-light)' }}>Update Info</button>
+                            </form>
                         </div>
 
                         <div className="settings-section" style={{ marginBottom: 30, borderTop: '1px solid var(--border-light)', paddingTop: 30 }}>
@@ -601,12 +635,12 @@ const RecruiterDashboard = () => {
                                         </a>
                                     )}
                                 </div>
-                                {viewingResume.status !== 'Accepted' && viewingResume.status !== 'Rejected' ? (
+                                {viewingResume.status !== 'Shortlisted for in-person interview' && viewingResume.status !== 'Rejected' ? (
                                     <div style={{ display: 'flex', gap: '10px' }}>
                                         <button
                                             className="btn btn-sm"
                                             style={{ background: '#48C78E', color: '#fff', fontWeight: 600, border: 'none', padding: '8px 16px' }}
-                                            onClick={() => handleUpdateStatus(viewingResume, 'Accepted')}
+                                            onClick={() => handleUpdateStatus(viewingResume, 'Shortlisted for in-person interview')}
                                         >
                                             <FiCheckSquare size={14} style={{ marginRight: 6 }} /> Accept
                                         </button>
@@ -619,8 +653,8 @@ const RecruiterDashboard = () => {
                                         </button>
                                     </div>
                                 ) : (
-                                    <div style={{ color: viewingResume.status === 'Accepted' ? '#48C78E' : '#FF5050', display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.9rem', fontWeight: 600 }}>
-                                        {viewingResume.status === 'Accepted' ? <FiCheckCircle size={16} /> : <FiX size={16} />} {viewingResume.status} & Emailed
+                                    <div style={{ color: viewingResume.status === 'Shortlisted for in-person interview' ? '#48C78E' : '#FF5050', display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.9rem', fontWeight: 600 }}>
+                                        {viewingResume.status === 'Shortlisted for in-person interview' ? <FiCheckCircle size={16} /> : <FiX size={16} />} {viewingResume.status} & Emailed
                                     </div>
                                 )}
                             </div>

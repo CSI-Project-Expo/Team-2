@@ -187,9 +187,9 @@ const updateApplicantStatus = async (req, res) => {
 
                     let subject = '';
                     let text = '';
-                    if (status === 'Accepted') {
-                        subject = `Congratulations! You have been accepted for ${job.title}`;
-                        text = `Hello ${applicant.student.name},\n\nCongratulations! We are thrilled to inform you that you have been strictly selected for the ${job.title} role at ${job.companyName}.\n\nOur hiring team will reach out with the onboarding and next step details shortly.\n\nBest,\n${job.companyName} Hiring Team`;
+                    if (status === 'Shortlisted for in-person interview') {
+                        subject = `Congratulations! You have been shortlisted for ${job.title}`;
+                        text = `Hello ${applicant.student.name},\n\nCongratulations! We are thrilled to inform you that you have been shortlisted for an in-person interview for the ${job.title} role at ${job.companyName}.\n\nOur hiring team will reach out with the onboarding and next step details shortly.\n\nBest,\n${job.companyName} Hiring Team`;
                     } else {
                         subject = `Update regarding your application for ${job.title}`;
                         text = `Hello ${applicant.student.name},\n\nThank you for applying to the ${job.title} role at ${job.companyName}. After careful consideration, we have decided to move forward with other candidates at this time.\n\nWe appreciate your interest and encourage you to apply for future openings.\n\nBest,\n${job.companyName} Hiring Team`;

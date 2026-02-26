@@ -11,24 +11,28 @@ const JobCard = ({ job, onApply }) => {
     } = job;
 
     const [isBookmarked, setIsBookmarked] = React.useState(false);
+    const userId = React.useMemo(() => {
+        const u = localStorage.getItem('userInfo');
+        return u ? JSON.parse(u)._id : 'guest';
+    }, []);
 
     React.useEffect(() => {
-        const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+        const saved = JSON.parse(localStorage.getItem(`savedJobs_${userId}`) || '[]');
         if (saved.some(s => s.id === job.id)) {
             setIsBookmarked(true);
         }
-    }, [job.id]);
+    }, [job.id, userId]);
 
     const toggleBookmark = (e) => {
-        e.stopPropagation(); // prevent applying when clicking bookmark
-        const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+        e.stopPropagation();
+        const saved = JSON.parse(localStorage.getItem(`savedJobs_${userId}`) || '[]');
         if (isBookmarked) {
             const updated = saved.filter(s => s.id !== job.id);
-            localStorage.setItem('savedJobs', JSON.stringify(updated));
+            localStorage.setItem(`savedJobs_${userId}`, JSON.stringify(updated));
             setIsBookmarked(false);
         } else {
             saved.push(job);
-            localStorage.setItem('savedJobs', JSON.stringify(saved));
+            localStorage.setItem(`savedJobs_${userId}`, JSON.stringify(saved));
             setIsBookmarked(true);
         }
     };

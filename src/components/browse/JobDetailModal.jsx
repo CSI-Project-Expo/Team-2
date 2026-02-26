@@ -37,11 +37,34 @@ const JobDetailModal = ({ job, onClose }) => {
         e.preventDefault();
         if (!resumeFile || !studentName.trim()) return;
         setSubmitting(true);
-        await new Promise(r => setTimeout(r, 700)); // simulate brief processing
-        const score = applyToJob(job, studentName.trim(), resumeFile);
-        setAiScore(score);
-        setSubmitting(false);
-        setSubmitted(true);
+
+        try {
+            const formData = new FormData();
+            formData.append('resume', resumeFile);
+
+            const token = localStorage.getItem('token');
+            const res = await fetch(`http://localhost:5000/api/jobs/${job.id}/apply`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setAiScore(data.applicant?.aiScore || 45);
+                setSubmitted(true);
+            } else {
+                const data = await res.json();
+                alert(`Error: ${data.message}`);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Something went wrong submitting your application.');
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (

@@ -15,16 +15,9 @@ const statusColor = {
     'Applied': '#457EFF',
     'Under Review': '#FFD700',
     'Rejected': '#FF5050',
+    'Shortlisted for in-person interview': '#AC6CFF',
     'Interview': '#AC6CFF',
 };
-
-const ProfileItems = [
-    { label: 'Basic Info', done: true },
-    { label: 'Resume Uploaded', done: true },
-    { label: 'College Email Verified', done: true },
-    { label: 'Skills Added', done: false },
-    { label: 'LinkedIn Connected', done: false },
-];
 
 const StudentDashboard = () => {
     const { applications: dummyApps } = useResume();
@@ -75,10 +68,60 @@ const StudentDashboard = () => {
         fetchStudentApps();
         fetchJobs();
 
-        // Load saved jobs
-        const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]');
-        setSavedJobs(saved);
     }, [location]);
+
+    const [editName, setEditName] = useState('');
+    const [editEmail, setEditEmail] = useState('');
+
+    React.useEffect(() => {
+        const storedUser = localStorage.getItem('userInfo');
+        if (storedUser) {
+            const parsed = JSON.parse(storedUser);
+            setUser(parsed);
+            setEditName(parsed.name || '');
+            setEditEmail(parsed.email || '');
+
+            // Load saved jobs strictly scoped to user
+            const saved = JSON.parse(localStorage.getItem(`savedJobs_${parsed._id}`) || '[]');
+            setSavedJobs(saved);
+        }
+    }, [location]);
+
+    const handleUpdateProfile = async (e) => {
+        e.preventDefault();
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch('http://localhost:5000/api/auth/profile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ name: editName, email: editEmail })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                localStorage.setItem('userInfo', JSON.stringify(data));
+                setUser(data);
+                alert('Profile updated successfully!');
+            } else {
+                const data = await res.json();
+                alert(`Error: ${data.message}`);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Something went wrong.');
+        }
+    };
+
+    const ProfileItems = [
+        { label: 'Basic Info', done: true },
+        { label: 'Resume Uploaded', done: !!user?.resumeUrl },
+        { label: 'College Email Verified', done: true },
+        { label: 'Skills Added', done: false },
+        { label: 'LinkedIn Connected', done: false },
+    ];
 
     const [uploadModal, setUploadModal] = React.useState(false);
     const [uploadFile, setUploadFile] = React.useState(null);
@@ -376,15 +419,17 @@ const StudentDashboard = () => {
                     <motion.div className="dash-panel glass-card" initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ maxWidth: '600px' }}>
                         <div className="settings-section" style={{ marginBottom: 30 }}>
                             <h3 style={{ marginBottom: 16, color: 'var(--text-primary)' }}>Account Information</h3>
-                            <div className="form-group" style={{ marginBottom: 16 }}>
-                                <label className="form-label">Username</label>
-                                <input type="text" className="input" defaultValue={user?.name || ''} />
-                            </div>
-                            <div className="form-group" style={{ marginBottom: 16 }}>
-                                <label className="form-label">Email Address</label>
-                                <input type="email" className="input" defaultValue={user?.email || ''} />
-                            </div>
-                            <button className="btn btn-ghost" style={{ border: '1px solid var(--border-light)' }}>Update Info</button>
+                            <form onSubmit={handleUpdateProfile}>
+                                <div className="form-group" style={{ marginBottom: 16 }}>
+                                    <label className="form-label">Username</label>
+                                    <input type="text" className="input" value={editName} onChange={e => setEditName(e.target.value)} required />
+                                </div>
+                                <div className="form-group" style={{ marginBottom: 16 }}>
+                                    <label className="form-label">Email Address</label>
+                                    <input type="email" className="input" value={editEmail} onChange={e => setEditEmail(e.target.value)} required />
+                                </div>
+                                <button type="submit" className="btn btn-ghost" style={{ border: '1px solid var(--border-light)' }}>Update Info</button>
+                            </form>
                         </div>
 
                         <div className="settings-section" style={{ marginBottom: 30, borderTop: '1px solid var(--border-light)', paddingTop: 30 }}>
