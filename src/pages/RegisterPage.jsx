@@ -40,9 +40,11 @@ const RegisterPage = () => {
             }
         }
         if (key === 'collegeEmail') {
-            if (!value.includes('.edu') && !value.includes('.ac.in') && !value.includes('.edu.in')) {
-                return 'Please use a valid college email (.ac.in or .edu)';
+            const val = (value || '').toLowerCase().trim();
+            if (val && val.length > 0 && !val.includes('@')) {
+                return 'Please enter a valid email address';
             }
+            // Removing strict .edu / .ac.in check to accommodate all valid college domains
         }
         if (key === 'password' && value.length < 8) return 'Password must be at least 8 characters';
         return '';

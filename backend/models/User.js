@@ -25,6 +25,14 @@ const userSchema = mongoose.Schema(
             type: String, // Only for students
             default: '',
         },
+        resumeText: {
+            type: String,
+            default: '',
+        },
+        cgpa: {
+            type: Number,
+            default: 0,
+        },
     },
     {
         timestamps: true,

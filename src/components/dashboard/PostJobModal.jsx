@@ -66,8 +66,9 @@ const PostJobModal = ({ onClose, onSubmit }) => {
         if (!form.title.trim()) e.title = 'Job title is required';
         if (!form.company.trim()) e.company = 'Company name is required';
         if (!form.location.trim()) e.location = 'Location is required';
-        if (!form.salaryMin) e.salaryMin = 'Enter min salary';
-        if (!form.salaryMax) e.salaryMax = 'Enter max salary';
+        if (form.salaryMin === '' || Number(form.salaryMin) < 0) e.salaryMin = 'Enter valid min salary';
+        if (form.salaryMax === '' || Number(form.salaryMax) < 0) e.salaryMax = 'Enter valid max salary';
+        if (Number(form.salaryMax) < Number(form.salaryMin)) e.salaryMax = 'Max salary must be >= Min salary';
         if (!form.experience.trim()) e.experience = 'Experience required';
         if (!form.description.trim()) e.description = 'Description is required';
         if (form.skills.length === 0) e.skills = 'Add at least one skill';

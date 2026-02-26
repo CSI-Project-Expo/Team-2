@@ -13,9 +13,8 @@ const studentNav = [
 
 const recruiterNav = [
     { icon: <FiHome size={18} />, label: 'Overview', path: '/dashboard/recruiter' },
-    { icon: <FiBriefcase size={18} />, label: 'Post Job', path: '/dashboard/recruiter/post-job' },
-    { icon: <FiUsers size={18} />, label: 'Applicants', path: '/dashboard/recruiter/applicants' },
-    { icon: <FiFileText size={18} />, label: 'Question Bank', path: '/dashboard/recruiter/questions' },
+    { icon: <FiBriefcase size={18} />, label: 'Post Job', path: '/dashboard/recruiter#post-job' },
+    { icon: <FiUsers size={18} />, label: 'Applicants', path: '/dashboard/recruiter#applicants' },
     { icon: <FiSettings size={18} />, label: 'Settings', path: '/dashboard/recruiter/settings' },
 ];
 
@@ -28,6 +27,7 @@ const adminNav = [
 
 const DashboardSidebar = ({ role = 'student' }) => {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [user, setUser] = React.useState(null);
 
@@ -81,7 +81,7 @@ const DashboardSidebar = ({ role = 'student' }) => {
                     <Link
                         key={item.label}
                         to={item.path}
-                        className={`ds-nav-item ${location.pathname === item.path ? 'ds-nav-item--active' : ''}`}
+                        className={`ds-nav-item ${(location.pathname === item.path || location.pathname + location.hash === item.path) ? 'ds-nav-item--active' : ''}`}
                     >
                         <span className="ds-nav-icon">{item.icon}</span>
                         <span>{item.label}</span>

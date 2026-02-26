@@ -41,17 +41,42 @@ const upload = multer({
     },
 });
 
+import pdfParse from 'pdf-parse';
+
 router.post('/', protect, student, upload.single('resume'), async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
     }
 
     const resumeUrl = `/${req.file.path.replace(/\\/g, '/')}`;
+    let resumeText = '';
+    let cgpa = 0;
 
-    // Update user with resume URL
+    try {
+        if (req.file.mimetype === 'application/pdf') {
+            const dataBuffer = fs.readFileSync(req.file.path);
+            const data = await pdfParse(dataBuffer);
+            resumeText = data.text;
+
+            // Try to extract CGPA
+            const cgpaMatch = resumeText.match(/cgpa[\s:]*([0-9.]+)/i);
+            if (cgpaMatch && cgpaMatch[1]) {
+                const parsedCgpa = parseFloat(cgpaMatch[1]);
+                if (!isNaN(parsedCgpa) && parsedCgpa <= 10) {
+                    cgpa = parsedCgpa;
+                }
+            }
+        }
+    } catch (e) {
+        console.error('Error parsing PDF:', e);
+    }
+
+    // Update user with resume URL and parsed text
     const user = await User.findById(req.user._id);
     if (user) {
         user.resumeUrl = resumeUrl;
+        user.resumeText = resumeText;
+        user.cgpa = cgpa;
         await user.save();
     }
 
