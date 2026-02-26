@@ -4,13 +4,14 @@ import Job from '../models/Job.js';
 // @route   POST /api/jobs
 // @access  Private/Recruiter
 const createJob = async (req, res) => {
-    const { title, companyName, location, type, salary, description, requirements } = req.body;
+    const { title, companyName, industry, location, type, salary, description, requirements } = req.body;
 
     try {
         const job = new Job({
             recruiter: req.user._id,
             title,
             companyName,
+            industry,
             location,
             type,
             salary,
@@ -231,7 +232,8 @@ const updateApplicantStatus = async (req, res) => {
 const getStudentApplications = async (req, res) => {
     try {
         const jobs = await Job.find({ 'applicants.student': req.user._id })
-            .select('title companyName location applicants createdAt')
+            .select('title companyName location applicants createdAt recruiter')
+            .populate('recruiter', 'email name')
             .sort({ createdAt: -1 });
 
         const mappedApps = jobs.map(job => {
@@ -241,6 +243,7 @@ const getStudentApplications = async (req, res) => {
                 jobTitle: job.title,
                 companyName: job.companyName,
                 location: job.location,
+                recruiterEmail: job.recruiter?.email,
                 status: myApp ? myApp.status : 'Applied',
                 date: myApp ? new Date(myApp.appliedAt).toLocaleDateString() : new Date(job.createdAt).toLocaleDateString()
             };

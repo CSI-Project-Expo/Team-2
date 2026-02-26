@@ -64,6 +64,7 @@ const RecruiterDashboard = () => {
                 const data = await res.json();
                 localStorage.setItem('userInfo', JSON.stringify(data));
                 setUser(data);
+                window.dispatchEvent(new Event('userUpdated'));
                 setToast('Profile updated successfully!');
                 setTimeout(() => setToast(null), 3000);
             } else {
@@ -134,6 +135,7 @@ const RecruiterDashboard = () => {
                 body: JSON.stringify({
                     title: job.title,
                     companyName: job.company,
+                    industry: job.industry,
                     location: job.location,
                     type: job.type,
                     salary: job.salary,

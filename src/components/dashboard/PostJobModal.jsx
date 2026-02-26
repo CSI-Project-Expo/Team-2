@@ -9,6 +9,7 @@ const SKILL_SUGGESTIONS = ['React', 'Node.js', 'Python', 'Java', 'TypeScript', '
 const EMPTY_FORM = {
     title: '',
     company: '',
+    industry: '',
     type: 'Full-time',
     location: '',
     remote: false,
@@ -65,6 +66,7 @@ const PostJobModal = ({ onClose, onSubmit }) => {
         const e = {};
         if (!form.title.trim()) e.title = 'Job title is required';
         if (!form.company.trim()) e.company = 'Company name is required';
+        if (!form.industry.trim()) e.industry = 'Industry/Category required';
         if (!form.location.trim()) e.location = 'Location is required';
         if (form.salaryMin === '' || Number(form.salaryMin) < 0) e.salaryMin = 'Enter valid min salary';
         if (form.salaryMax === '' || Number(form.salaryMax) < 0) e.salaryMax = 'Enter valid max salary';
@@ -77,7 +79,7 @@ const PostJobModal = ({ onClose, onSubmit }) => {
 
     const isIncomplete = () => {
         return (
-            !form.title.trim() || !form.company.trim() || !form.location.trim() ||
+            !form.title.trim() || !form.company.trim() || !form.industry.trim() || !form.location.trim() ||
             !form.salaryMin || !form.salaryMax || !form.experience.trim() ||
             !form.description.trim() || form.skills.length === 0
         );
@@ -95,6 +97,7 @@ const PostJobModal = ({ onClose, onSubmit }) => {
             id: Date.now(),
             title: form.title.trim(),
             company: form.company.trim(),
+            industry: form.industry.trim(),
             type: form.type,
             location: form.location.trim(),
             remote: form.remote,
@@ -200,6 +203,40 @@ const PostJobModal = ({ onClose, onSubmit }) => {
                                     onChange={e => set('company', e.target.value)}
                                 />
                                 {errors.company && <span className="pjm-error-msg">{errors.company}</span>}
+                            </div>
+                        </div>
+
+                        {/* Row 1.5: Industry */}
+                        <div className="pjm-row-1" style={{ marginBottom: 20 }}>
+                            <div className="pjm-field">
+                                <label className="pjm-label">Industry / Type <span className="pjm-req">*</span></label>
+                                <div className="pjm-chip-grid" style={{ marginBottom: 10 }}>
+                                    {[
+                                        'Technology', 'Finance', 'Marketing', 'Healthcare',
+                                        'Education', 'Design', 'E-commerce', 'Fintech',
+                                        'Edtech', 'Real Estate', 'Logistics', 'Manufacturing',
+                                        'Retail', 'Consulting', 'Media', 'SaaS',
+                                        'Startup', 'Agency'
+                                    ].map(ind => (
+                                        <button
+                                            key={ind}
+                                            type="button"
+                                            className={`pjm-chip ${form.industry.toLowerCase() === ind.toLowerCase() ? 'pjm-chip--active' : ''}`}
+                                            onClick={() => set('industry', ind)}
+                                        >
+                                            {form.industry.toLowerCase() === ind.toLowerCase() && <FiCheckCircle size={11} />}
+                                            {ind}
+                                        </button>
+                                    ))}
+                                </div>
+                                <input
+                                    className={`pjm-input ${errors.industry ? 'pjm-input--error' : ''}`}
+                                    type="text"
+                                    placeholder="Or type custom industry (e.g. Biotechnology)"
+                                    value={form.industry}
+                                    onChange={e => set('industry', e.target.value)}
+                                />
+                                {errors.industry && <span className="pjm-error-msg">{errors.industry}</span>}
                             </div>
                         </div>
 

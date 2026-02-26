@@ -131,6 +131,13 @@ const JobDetailModal = ({ job, onClose }) => {
                                     </div>
                                 </div>
                                 <div className="jdm-meta-item">
+                                    <FiTag className="jdm-meta-icon" />
+                                    <div>
+                                        <div className="jdm-meta-label">Industry</div>
+                                        <div className="jdm-meta-value">{job.industry || 'General'}</div>
+                                    </div>
+                                </div>
+                                <div className="jdm-meta-item">
                                     <FiClock className="jdm-meta-icon" />
                                     <div>
                                         <div className="jdm-meta-label">Experience</div>

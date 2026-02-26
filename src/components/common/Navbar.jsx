@@ -27,11 +27,21 @@ const Navbar = ({ variant = 'landing', searchQuery, onSearchChange }) => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('userInfo');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-    }, [location]); // re-check on route change
+        const loadUser = (e) => {
+            const storedUser = localStorage.getItem('userInfo');
+            console.log('Navbar loadUser fired:', storedUser ? 'Found user' : 'No user', e?.type);
+            if (storedUser) {
+                setUser(JSON.parse(storedUser));
+            } else {
+                setUser(null);
+            }
+        };
+
+        loadUser();
+        window.addEventListener('userUpdated', loadUser);
+
+        return () => window.removeEventListener('userUpdated', loadUser);
+    }, [location]);
 
     const handleLogout = () => {
         localStorage.removeItem('userInfo');
@@ -53,7 +63,7 @@ const Navbar = ({ variant = 'landing', searchQuery, onSearchChange }) => {
     const navLinks = [
         { label: 'Jobs', path: '/jobs' },
         { label: 'Companies', path: '/companies' },
-        { label: 'Testimonials', path: '/#testimonials' },
+        { label: 'About Us', path: '/about' },
     ];
 
     const isActive = (path) => location.pathname === path;

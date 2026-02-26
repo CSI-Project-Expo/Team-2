@@ -73,6 +73,10 @@ const updateUserProfile = async (req, res) => {
         const user = await User.findById(req.user._id);
 
         if (user) {
+            console.log('--- Profile Update Attempt ---');
+            console.log('Incoming req.body:', req.body);
+            console.log('Current user.name:', user.name);
+
             // Uniqueness check for email
             if (req.body.email && req.body.email !== user.email) {
                 const emailExists = await User.findOne({ email: req.body.email });
@@ -83,6 +87,8 @@ const updateUserProfile = async (req, res) => {
 
             user.name = req.body.name || user.name;
             user.email = req.body.email || user.email;
+
+            console.log('Modified user.name before save:', user.name);
 
             if (req.body.password) {
                 user.password = req.body.password;

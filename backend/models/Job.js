@@ -15,6 +15,10 @@ const jobSchema = mongoose.Schema(
             type: String,
             required: true,
         },
+        industry: {
+            type: String,
+            required: true,
+        },
         location: {
             type: String,
             required: true,

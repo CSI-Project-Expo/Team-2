@@ -89,6 +89,7 @@ const StudentDashboard = () => {
 
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
+        alert('Sending Name: ' + editName + ' Email: ' + editEmail);
         try {
             const token = localStorage.getItem('token');
             const res = await fetch('http://localhost:5000/api/auth/profile', {
@@ -104,6 +105,7 @@ const StudentDashboard = () => {
                 const data = await res.json();
                 localStorage.setItem('userInfo', JSON.stringify(data));
                 setUser(data);
+                window.dispatchEvent(new Event('userUpdated'));
                 alert('Profile updated successfully!');
             } else {
                 const data = await res.json();
@@ -353,6 +355,17 @@ const StudentDashboard = () => {
                                 >
                                     <FiUpload size={13} /> Upload / Update Resume
                                 </button>
+                                {user?.resumeUrl && (
+                                    <a
+                                        href={`http://localhost:5000${user.resumeUrl}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="btn btn-outline-gold btn-sm"
+                                        style={{ width: '100%', justifyContent: 'center', marginTop: 10, display: 'flex' }}
+                                    >
+                                        <FiFileText size={13} style={{ marginRight: 6 }} /> View Current Resume
+                                    </a>
+                                )}
                             </motion.div>
                         </div>
                     </>
@@ -384,9 +397,18 @@ const StudentDashboard = () => {
                                                 marginBottom: '6px'
                                             }}
                                         >
-                                            {app.status === 'Shortlisted' ? '🎉 ' : ''}{app.status}
+                                            {app.status === 'Shortlisted for in-person interview' ? '🎉 ' : ''}{app.status}
                                         </span>
-                                        <div className="app-date" style={{ fontSize: '0.8rem' }}>Applied on {app.date}</div>
+                                        {app.status === 'Shortlisted for in-person interview' && app.recruiterEmail && (
+                                            <a
+                                                href={`mailto:${app.recruiterEmail}`}
+                                                className="btn btn-outline-gold btn-sm"
+                                                style={{ display: 'block', marginTop: 8, fontSize: '0.8rem', padding: '4px 10px', width: 'fit-content', marginLeft: 'auto' }}
+                                            >
+                                                <FiMail size={12} style={{ marginRight: 4 }} /> Contact Recruiter
+                                            </a>
+                                        )}
+                                        <div className="app-date" style={{ fontSize: '0.8rem', marginTop: '6px' }}>Applied on {app.date}</div>
                                     </div>
                                 </div>
                             )) : (
