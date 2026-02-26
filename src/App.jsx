@@ -15,6 +15,7 @@ import StudentDashboard from './pages/StudentDashboard';
 import RecruiterDashboard from './pages/RecruiterDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import ChatPage from './pages/ChatPage';
+import AboutPage from './pages/AboutPage';
 
 const PageTransition = ({ children }) => (
     <motion.div
@@ -41,6 +42,7 @@ const AppRoutes = () => {
                 <Route path="/" element={<PageTransition><LandingPage /></PageTransition>} />
                 <Route path="/jobs" element={<PageTransition><JobsPage /></PageTransition>} />
                 <Route path="/companies" element={<PageTransition><CompaniesPage /></PageTransition>} />
+                <Route path="/about" element={<PageTransition><AboutPage /></PageTransition>} />
                 <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
                 <Route path="/register" element={<PageTransition><RegisterPage /></PageTransition>} />
                 <Route path="/dashboard/student/*" element={<PageTransition><StudentDashboard /></PageTransition>} />

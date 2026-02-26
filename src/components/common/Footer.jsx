@@ -54,7 +54,11 @@ const Footer = () => {
                             <ul className="footer__col-links">
                                 {items.map(item => (
                                     <li key={item}>
-                                        <a href="#" className="footer__link">{item}</a>
+                                        {item === 'About Us' ? (
+                                            <Link to="/about" className="footer__link">{item}</Link>
+                                        ) : (
+                                            <a href="#" className="footer__link">{item}</a>
+                                        )}
                                     </li>
                                 ))}
                             </ul>
