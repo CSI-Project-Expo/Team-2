@@ -41,7 +41,9 @@ const upload = multer({
     },
 });
 
-import pdfParse from 'pdf-parse';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const pdfParse = require('pdf-parse');
 
 router.post('/', protect, student, upload.single('resume'), async (req, res) => {
     if (!req.file) {
