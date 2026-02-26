@@ -173,8 +173,8 @@ const RecruiterDashboard = () => {
                     job: { title: job.title, company: job.companyName || 'You', color: '#4285F4', skills: job.requirements },
                     aiScore: app.aiScore || 45,
                     appliedAt: new Date(app.appliedAt).toLocaleDateString(),
-                    resumeFileName: app.student?.resumeUrl ? app.student.resumeUrl.split('/').pop() : 'resume.pdf',
-                    resumeUrl: app.student?.resumeUrl ? `http://localhost:5000${app.student.resumeUrl}` : null,
+                    resumeFileName: app.student?.name ? `${app.student.name.replace(/\s+/g, '_')}_Resume.pdf` : 'Candidate_Resume.pdf',
+                    resumeUrl: app.student?.resumeUrl ? `http://localhost:5000${app.student.resumeUrl.startsWith('/') ? '' : '/'}${app.student.resumeUrl}` : null,
                 });
             });
         }
@@ -470,6 +470,8 @@ const RecruiterDashboard = () => {
                                                 <a
                                                     href={app.resumeUrl}
                                                     download={app.resumeFileName}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
                                                     className="rd-download-btn"
                                                     title="Download Resume"
                                                 >
@@ -624,13 +626,15 @@ const RecruiterDashboard = () => {
                                         </a>
                                     ) : (
                                         <div className="rd-no-file">
-                                            <FiFileText size={14} /> Resume preview not available for demo data.
+                                            <FiFileText size={14} /> Candidate hasn't uploaded a resume yet.
                                         </div>
                                     )}
                                     {viewingResume.resumeUrl && (
                                         <a
                                             href={viewingResume.resumeUrl}
-                                            download={viewingResume.resumeFileName}
+                                            download={viewingResume.resumeFileName || 'Resume'}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
                                             className="btn btn-outline-gold btn-sm"
                                         >
                                             <FiDownload size={13} /> Download
