@@ -27,7 +27,7 @@ const ProfileItems = [
 ];
 
 const StudentDashboard = () => {
-    const { applications } = useResume();
+    const { applications: dummyApps } = useResume();
     const [user, setUser] = React.useState(null);
     const location = useLocation();
 
@@ -35,32 +35,68 @@ const StudentDashboard = () => {
     const currentView = location.pathname.split('/').pop();
     const isOverview = currentView === 'student';
 
+    const [applications, setApplications] = useState([]);
+    const [fetchedJobs, setFetchedJobs] = useState([]);
+    const [savedJobs, setSavedJobs] = useState([]);
+
     React.useEffect(() => {
         const storedUser = localStorage.getItem('userInfo');
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         }
     }, []);
+
+    // Fetch Student's Real Applications
+    React.useEffect(() => {
+        const fetchStudentApps = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const headers = token ? { Authorization: `Bearer ${token}` } : {};
+                const res = await fetch('http://localhost:5000/api/jobs/student/applications', { headers });
+                if (res.ok) {
+                    const data = await res.json();
+                    setApplications(data);
+                }
+            } catch (err) {
+                console.error("Failed to fetch applications:", err);
+            }
+        };
+
+        const fetchJobs = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/jobs');
+                const data = await res.json();
+                setFetchedJobs(data);
+            } catch (err) {
+                console.error("Failed to fetch jobs:", err);
+            }
+        };
+
+        fetchStudentApps();
+        fetchJobs();
+
+        // Load saved jobs
+        const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+        setSavedJobs(saved);
+    }, [location]);
+
     const [uploadModal, setUploadModal] = React.useState(false);
     const [uploadFile, setUploadFile] = React.useState(null);
     const [uploadDone, setUploadDone] = React.useState(false);
     const [dragging, setDragging] = React.useState(false);
     const fileRef = React.useRef(null);
-    const [savedJobs, setSavedJobs] = React.useState([]);
 
-    // Derive stats from real context data
+    const displayJobs = fetchedJobs.length > 0 ? fetchedJobs : [];
+
+    // Derive stats from real application data
     const appliedCount = applications.length;
     const shortlistedCount = applications.filter(a => a.status === 'Shortlisted').length;
-    const offerCount = applications.filter(a => a.status === 'Offer').length;
-    const avgScore = applications.length
-        ? Math.round(applications.reduce((s, a) => s + a.aiScore, 0) / applications.length)
-        : 0;
+    const offerCount = applications.filter(a => a.status === 'Offer' || a.status === 'Accepted').length;
 
     const stats = [
         { icon: <FiBriefcase />, label: 'Applied', value: appliedCount, color: '#FFD700', trend: 'Total applications' },
         { icon: <FiStar />, label: 'Shortlisted', value: shortlistedCount, color: '#457EFF', trend: 'Under review' },
         { icon: <FiCheckCircle />, label: 'Offers', value: offerCount, color: '#48C78E', trend: 'Offers received' },
-        { icon: <FiTrendingUp />, label: 'Avg AI Score', value: avgScore ? `${avgScore}%` : 'N/A', color: '#AC6CFF', trend: 'Matches profile' },
     ];
 
     const handleFileSelect = (file) => {
@@ -108,26 +144,7 @@ const StudentDashboard = () => {
         }
     };
 
-    const [fetchedJobs, setFetchedJobs] = useState([]);
 
-    React.useEffect(() => {
-        const fetchJobs = async () => {
-            try {
-                const res = await fetch('http://localhost:5000/api/jobs');
-                const data = await res.json();
-                setFetchedJobs(data);
-            } catch (err) {
-                console.error("Failed to fetch jobs:", err);
-            }
-        };
-        fetchJobs();
-
-        // Load saved jobs
-        const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]');
-        setSavedJobs(saved);
-    }, [location]);
-
-    const displayJobs = fetchedJobs.length > 0 ? fetchedJobs : [];
 
     return (
         <div className="dashboard-layout">
@@ -205,17 +222,17 @@ const StudentDashboard = () => {
                                     )}
                                 </h3>
                                 <div className="applications-list">
-                                    {displayJobs.map((job, i) => (
+                                    {applications.slice(0, 3).map((app, i) => (
                                         <div key={i} className="application-row">
                                             <div className="app-logo" style={{ background: '#457EFF20', color: '#457EFF' }}>
-                                                {job.companyName ? job.companyName.charAt(0).toUpperCase() : 'C'}
+                                                {app.companyName ? app.companyName.charAt(0).toUpperCase() : 'C'}
                                             </div>
                                             <div className="app-info">
-                                                <div className="app-company">{job.companyName}</div>
+                                                <div className="app-company">{app.companyName}</div>
                                                 <div className="app-role">
-                                                    {job.title}
-                                                    {job.location && (
-                                                        <span className="app-location"><FiMapPin size={10} /> {job.location}</span>
+                                                    {app.jobTitle}
+                                                    {app.location && (
+                                                        <span className="app-location" style={{ marginLeft: 8 }}><FiMapPin size={10} /> {app.location}</span>
                                                     )}
                                                 </div>
                                             </div>
@@ -223,17 +240,22 @@ const StudentDashboard = () => {
                                                 <span
                                                     className="app-status"
                                                     style={{
-                                                        color: '#FFD700',
-                                                        background: '#FFD70015',
-                                                        border: `1px solid #FFD70030`
+                                                        color: statusColor[app.status] || '#FFD700',
+                                                        background: `${statusColor[app.status] || '#FFD700'}15`,
+                                                        border: `1px solid ${statusColor[app.status] || '#FFD700'}30`
                                                     }}
                                                 >
-                                                    Available
+                                                    {app.status}
                                                 </span>
-                                                <div className="app-date">{new Date(job.createdAt).toLocaleDateString()}</div>
+                                                <div className="app-date">{app.date}</div>
                                             </div>
                                         </div>
                                     ))}
+                                    {applications.length === 0 && (
+                                        <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                                            No applications yet.
+                                        </div>
+                                    )}
                                 </div>
                             </motion.div>
 
@@ -302,21 +324,26 @@ const StudentDashboard = () => {
                                         {app.jobTitle ? app.jobTitle.charAt(0).toUpperCase() : 'J'}
                                     </div>
                                     <div className="app-info">
-                                        <div className="app-company">{app.companyName || 'Company'}</div>
-                                        <div className="app-role">{app.jobTitle || 'Role'}</div>
+                                        <div className="app-company" style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--text-primary)' }}>{app.companyName || 'Corporate'}</div>
+                                        <div className="app-role" style={{ color: 'var(--text-muted)', marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+                                            {app.jobTitle || 'Role'}
+                                            {app.location && <span>• <FiMapPin size={11} style={{ display: 'inline', transform: 'translateY(-1px)' }} /> {app.location}</span>}
+                                        </div>
                                     </div>
-                                    <div className="app-right">
+                                    <div className="app-right" style={{ textAlign: 'right' }}>
                                         <span
                                             className="app-status"
                                             style={{
                                                 color: statusColor[app.status] || '#FFD700',
                                                 background: `${statusColor[app.status] || '#FFD700'}15`,
-                                                border: `1px solid ${statusColor[app.status] || '#FFD700'}30`
+                                                border: `1px solid ${statusColor[app.status] || '#FFD700'}30`,
+                                                display: 'inline-block',
+                                                marginBottom: '6px'
                                             }}
                                         >
-                                            {app.status}
+                                            {app.status === 'Shortlisted' ? '🎉 ' : ''}{app.status}
                                         </span>
-                                        <div className="app-date">{app.date || new Date().toLocaleDateString()}</div>
+                                        <div className="app-date" style={{ fontSize: '0.8rem' }}>Applied on {app.date}</div>
                                     </div>
                                 </div>
                             )) : (

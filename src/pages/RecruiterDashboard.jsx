@@ -52,9 +52,7 @@ const RecruiterDashboard = () => {
                     const data = await res.json();
                     setFetchedJobs(data);
                 } else {
-                    const resAll = await fetch('http://localhost:5000/api/jobs');
-                    const dataAll = await resAll.json();
-                    setFetchedJobs(dataAll);
+                    console.error("Failed to fetch jobs");
                 }
             } catch (err) {
                 console.error("Failed to fetch jobs:", err);
@@ -180,29 +178,35 @@ const RecruiterDashboard = () => {
                 setToast('Job deleted successfully');
                 setTimeout(() => setToast(null), 3000);
             } else {
-                alert('Failed to delete job');
+                const data = await res.json();
+                alert(`Failed to delete job: ${data.message || 'Server error'}`);
+                console.error("Delete failed", data);
             }
         } catch (err) {
             console.error(err);
         }
     };
 
-    const handleShortlist = async (app) => {
+    const handleUpdateStatus = async (app, status) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:5000/api/jobs/${app.jobId}/applicants/${app.studentId}/shortlist`, {
+            const res = await fetch(`http://localhost:5000/api/jobs/${app.jobId}/applicants/${app.studentId}/status`, {
                 method: 'PATCH',
-                headers: { Authorization: `Bearer ${token}` }
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ status })
             });
             if (res.ok) {
-                setToast('Applicant shortlisted and email sent!');
-                setViewingResume({ ...app, status: 'Shortlisted' });
+                setToast(`Applicant ${status.toLowerCase()} and email sent!`);
+                setViewingResume({ ...app, status });
                 setFetchedJobs(prev => prev.map(job => {
                     if (job._id === app.jobId) {
                         return {
                             ...job,
                             applicants: job.applicants.map(a =>
-                                a.student?._id === app.studentId ? { ...a, status: 'Shortlisted' } : a
+                                a.student?._id === app.studentId ? { ...a, status } : a
                             )
                         };
                     }
@@ -210,7 +214,7 @@ const RecruiterDashboard = () => {
                 }));
                 setTimeout(() => setToast(null), 3500);
             } else {
-                alert('Failed to shortlist applicant');
+                alert(`Failed to ${status.toLowerCase()} applicant`);
             }
         } catch (err) {
             console.error(err);
@@ -597,17 +601,26 @@ const RecruiterDashboard = () => {
                                         </a>
                                     )}
                                 </div>
-                                {viewingResume.status !== 'Shortlisted' ? (
-                                    <button
-                                        className="btn btn-sm"
-                                        style={{ background: '#48C78E', color: '#000', fontWeight: 600, border: 'none' }}
-                                        onClick={() => handleShortlist(viewingResume)}
-                                    >
-                                        <FiCheckSquare size={14} /> Shortlist & Email
-                                    </button>
+                                {viewingResume.status !== 'Accepted' && viewingResume.status !== 'Rejected' ? (
+                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                        <button
+                                            className="btn btn-sm"
+                                            style={{ background: '#48C78E', color: '#fff', fontWeight: 600, border: 'none', padding: '8px 16px' }}
+                                            onClick={() => handleUpdateStatus(viewingResume, 'Accepted')}
+                                        >
+                                            <FiCheckSquare size={14} style={{ marginRight: 6 }} /> Accept
+                                        </button>
+                                        <button
+                                            className="btn btn-sm"
+                                            style={{ background: 'transparent', color: '#FF5050', border: '1px solid #FF5050', fontWeight: 600, padding: '8px 16px' }}
+                                            onClick={() => handleUpdateStatus(viewingResume, 'Rejected')}
+                                        >
+                                            <FiX size={14} style={{ marginRight: 6 }} /> Reject
+                                        </button>
+                                    </div>
                                 ) : (
-                                    <div style={{ color: '#48C78E', display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.9rem' }}>
-                                        <FiCheckCircle size={16} /> Shortlisted & Emailed
+                                    <div style={{ color: viewingResume.status === 'Accepted' ? '#48C78E' : '#FF5050', display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.9rem', fontWeight: 600 }}>
+                                        {viewingResume.status === 'Accepted' ? <FiCheckCircle size={16} /> : <FiX size={16} />} {viewingResume.status} & Emailed
                                     </div>
                                 )}
                             </div>

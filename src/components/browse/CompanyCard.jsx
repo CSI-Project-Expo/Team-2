@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { FiStar, FiMapPin, FiUsers, FiCalendar, FiExternalLink } from 'react-icons/fi';
 import './CompanyCard.css';
 
-const CompanyCard = ({ company }) => {
+const CompanyCard = ({ company, onViewDetails }) => {
     const {
         name, logo, color, tags, rating, reviews,
         founded, employees, location, openJobs, verified
@@ -71,9 +71,9 @@ const CompanyCard = ({ company }) => {
                     <span className="open-jobs__count" style={{ color }}>{openJobs}</span>
                     <span className="open-jobs__label"> open jobs</span>
                 </div>
-                <Link to={`/companies/${company.id}`} className="btn btn-outline-gold btn-sm">
+                <button onClick={onViewDetails} className="btn btn-outline-gold btn-sm">
                     View Details <FiExternalLink size={12} />
-                </Link>
+                </button>
             </div>
         </motion.div>
     );

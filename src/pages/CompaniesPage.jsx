@@ -6,6 +6,7 @@ import Footer from '../components/common/Footer';
 import IndustryFilterBar from '../components/browse/IndustryFilterBar';
 import SidebarFilters from '../components/browse/SidebarFilters';
 import CompanyCard from '../components/browse/CompanyCard';
+import CompanyDetailsModal from '../components/browse/CompanyDetailsModal';
 import { mockCompanies } from '../data/mockCompanies';
 import './BrowsePage.css';
 
@@ -13,6 +14,15 @@ const CompaniesPage = () => {
     const [industry, setIndustry] = useState('all');
     const [viewMode, setViewMode] = useState('grid');
     const [showMobileFilters, setShowMobileFilters] = useState(false);
+
+    // Modal state
+    const [selectedCompany, setSelectedCompany] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openCompanyModal = (company) => {
+        setSelectedCompany(company);
+        setIsModalOpen(true);
+    };
 
     const displayedCompanies = industry === 'all'
         ? mockCompanies
@@ -85,12 +95,18 @@ const CompaniesPage = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: i * 0.05 }}
                             >
-                                <CompanyCard company={company} />
+                                <CompanyCard company={company} onViewDetails={() => openCompanyModal(company)} />
                             </motion.div>
                         ))}
                     </div>
                 </main>
             </div>
+
+            <CompanyDetailsModal
+                company={selectedCompany}
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
 
             <Footer />
         </div>

@@ -140,7 +140,7 @@ const deleteJob = async (req, res) => {
             if (job.recruiter.toString() !== req.user._id.toString()) {
                 return res.status(401).json({ message: 'Not authorized to delete this job' });
             }
-            await Job.deleteOne({ _id: job._id });
+            await Job.findByIdAndDelete(req.params.id);
             res.json({ message: 'Job removed' });
         } else {
             res.status(404).json({ message: 'Job not found' });
@@ -150,16 +150,22 @@ const deleteJob = async (req, res) => {
     }
 };
 
-// @desc    Shortlist Applicant
-// @route   PATCH /api/jobs/:id/applicants/:studentId/shortlist
+// @desc    Update Applicant Status
+// @route   PATCH /api/jobs/:id/applicants/:studentId/status
 // @access  Private/Recruiter
-const shortlistApplicant = async (req, res) => {
+const updateApplicantStatus = async (req, res) => {
     try {
+        const { status } = req.body; // Expects 'Accepted' or 'Rejected'
         const job = await Job.findById(req.params.id).populate('applicants.student');
         if (job) {
+            // Check if auth user is the recruiter who posted the job
+            if (job.recruiter.toString() !== req.user._id.toString()) {
+                return res.status(401).json({ message: 'Not authorized to modify applicants for this job' });
+            }
+
             const applicant = job.applicants.find(a => a.student._id.toString() === req.params.studentId);
             if (applicant) {
-                applicant.status = 'Shortlisted';
+                applicant.status = status;
                 await job.save();
 
                 // Simulate sending email setup
@@ -179,12 +185,22 @@ const shortlistApplicant = async (req, res) => {
                         }
                     });
 
+                    let subject = '';
+                    let text = '';
+                    if (status === 'Accepted') {
+                        subject = `Congratulations! You have been accepted for ${job.title}`;
+                        text = `Hello ${applicant.student.name},\n\nCongratulations! We are thrilled to inform you that you have been strictly selected for the ${job.title} role at ${job.companyName}.\n\nOur hiring team will reach out with the onboarding and next step details shortly.\n\nBest,\n${job.companyName} Hiring Team`;
+                    } else {
+                        subject = `Update regarding your application for ${job.title}`;
+                        text = `Hello ${applicant.student.name},\n\nThank you for applying to the ${job.title} role at ${job.companyName}. After careful consideration, we have decided to move forward with other candidates at this time.\n\nWe appreciate your interest and encourage you to apply for future openings.\n\nBest,\n${job.companyName} Hiring Team`;
+                    }
+
                     // Message object
                     let message = {
                         from: `"${job.companyName}" <hr@${job.companyName.replace(/\s+/g, '').toLowerCase()}.com>`,
                         to: applicant.student.email,
-                        subject: `You have been shortlisted for in-person interview for ${job.title}`,
-                        text: `Hello ${applicant.student.name},\n\nCongratulations! You have been shortlisted for an in-person interview for the ${job.title} role at ${job.companyName}.\n\nWe will reach out with the date and time details shortly.\n\nBest,\n${job.companyName} Hiring Team`,
+                        subject: subject,
+                        text: text,
                     };
 
                     transporter.sendMail(message, (err, info) => {
@@ -193,12 +209,11 @@ const shortlistApplicant = async (req, res) => {
                             return;
                         }
                         console.log('Message sent: %s', info.messageId);
-                        // Preview only available when sending through an Ethereal account
                         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
                     });
                 });
 
-                res.json({ message: 'Applicant shortlisted and email sent' });
+                res.json({ message: `Applicant status updated to ${status}` });
             } else {
                 res.status(404).json({ message: 'Applicant not found' });
             }
@@ -210,4 +225,31 @@ const shortlistApplicant = async (req, res) => {
     }
 };
 
-export { createJob, getJobs, applyJob, getRecruiterJobs, deleteJob, shortlistApplicant };
+// @desc    Get apps for student
+// @route   GET /api/jobs/student/applications
+// @access  Private/Student
+const getStudentApplications = async (req, res) => {
+    try {
+        const jobs = await Job.find({ 'applicants.student': req.user._id })
+            .select('title companyName location applicants createdAt')
+            .sort({ createdAt: -1 });
+
+        const mappedApps = jobs.map(job => {
+            const myApp = job.applicants.find(a => a.student.toString() === req.user._id.toString());
+            return {
+                _id: job._id,
+                jobTitle: job.title,
+                companyName: job.companyName,
+                location: job.location,
+                status: myApp ? myApp.status : 'Applied',
+                date: myApp ? new Date(myApp.appliedAt).toLocaleDateString() : new Date(job.createdAt).toLocaleDateString()
+            };
+        });
+
+        res.json(mappedApps);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+export { createJob, getJobs, applyJob, getRecruiterJobs, deleteJob, updateApplicantStatus, getStudentApplications };

@@ -61,17 +61,7 @@ const Footer = () => {
                         </div>
                     ))}
 
-                    {/* Newsletter */}
-                    <div className="footer__newsletter">
-                        <h4 className="footer__col-title">Stay Updated</h4>
-                        <p className="footer__newsletter-desc">
-                            Get the latest job opportunities directly in your inbox.
-                        </p>
-                        <div className="newsletter-form">
-                            <input type="email" placeholder="Enter your email" className="newsletter-input" />
-                            <button className="btn btn-gold btn-sm">Subscribe</button>
-                        </div>
-                    </div>
+
                 </div>
 
                 {/* Bottom Bar */}
