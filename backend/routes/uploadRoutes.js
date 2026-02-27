@@ -41,7 +41,11 @@ const upload = multer({
     },
 });
 
-import pdfParse from 'pdf-parse';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const rawPdfParse = require('pdf-parse');
+const pdfParse = typeof rawPdfParse === 'function' ? rawPdfParse : rawPdfParse.default ? rawPdfParse.default : rawPdfParse.PDFParse;
+
 router.post('/', protect, student, upload.single('resume'), async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
