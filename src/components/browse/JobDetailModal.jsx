@@ -57,14 +57,21 @@ const JobDetailModal = ({ job, onClose }) => {
 
             // First upload the resume and save CGPA to profile
             const uploadFormData = new FormData();
+            uploadFormData.append('cgpa', cgpa); // Must append text fields before files for Multer
             uploadFormData.append('resume', resumeFile);
-            uploadFormData.append('cgpa', cgpa);
 
-            await fetch('http://localhost:5000/api/upload', {
+            const uploadRes = await fetch('http://localhost:5000/api/upload', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${token}` },
                 body: uploadFormData
             });
+
+            if (!uploadRes.ok) {
+                const errorData = await uploadRes.json();
+                alert(`Upload failed: ${errorData.message || 'Unknown error'}`);
+                setSubmitting(false);
+                return;
+            }
 
             // Then apply to the job
             const res = await fetch(`http://localhost:5000/api/jobs/${job.id}/apply`, {
@@ -77,7 +84,7 @@ const JobDetailModal = ({ job, onClose }) => {
 
             if (res.ok) {
                 const data = await res.json();
-                setAiScore(data.applicant?.aiScore || 45);
+                setAiScore(data.applicant?.aiScore || Number(cgpa) * 10 || 45);
                 setSubmitted(true);
             } else {
                 const data = await res.json();

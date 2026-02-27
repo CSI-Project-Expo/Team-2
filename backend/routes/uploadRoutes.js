@@ -41,10 +41,7 @@ const upload = multer({
     },
 });
 
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const pdfParse = require('pdf-parse');
-
+import pdfParse from 'pdf-parse';
 router.post('/', protect, student, upload.single('resume'), async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
@@ -79,8 +76,10 @@ router.post('/', protect, student, upload.single('resume'), async (req, res) => 
     const user = await User.findById(req.user._id);
     if (user) {
         user.resumeUrl = resumeUrl;
-        user.resumeText = resumeText;
-        user.cgpa = cgpa;
+        user.resumeText = resumeText || user.resumeText;
+        if (cgpa) {
+            user.cgpa = cgpa;
+        }
         await user.save();
     }
 

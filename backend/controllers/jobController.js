@@ -111,6 +111,10 @@ const getRecruiterJobs = async (req, res) => {
 
             const applicantsWithScores = job.applicants.map(app => {
                 let aiScore = 40; // Base score
+                if (!app.student) {
+                    return { ...app.toObject(), aiScore: 0 };
+                }
+
                 const text = (app.student.resumeText || '').toLowerCase();
 
                 // Keyword match
