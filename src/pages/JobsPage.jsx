@@ -62,7 +62,9 @@ const JobsPage = () => {
 
     const displayedJobs = allJobs.filter(j => {
         // Industry Filter
-        const matchesIndustry = industry === 'all' || j.industry?.toLowerCase().includes(industry.toLowerCase());
+        const matchesIndustry = industry === 'all' ||
+            j.industry?.toLowerCase().includes(industry.toLowerCase()) ||
+            j.tags?.some(tag => tag.toLowerCase().includes(industry.toLowerCase()));
 
         // Search Filter
         const searchLower = searchQuery.toLowerCase();
@@ -73,7 +75,7 @@ const JobsPage = () => {
             j.skills?.some(skill => skill.toLowerCase().includes(searchLower));
 
         // Sidebar Filters
-        const matchesType = sidebarFilters.types.length === 0 || sidebarFilters.types.includes(j.type);
+        const matchesType = sidebarFilters.types.length === 0 || sidebarFilters.types.some(type => j.tags?.includes(type) || j.type === type);
         const matchesLocation = sidebarFilters.locations.length === 0 || sidebarFilters.locations.some(loc => j.location?.toLowerCase().includes(loc.toLowerCase()));
         const matchesDept = sidebarFilters.departments.length === 0 || sidebarFilters.departments.includes(j.department);
 

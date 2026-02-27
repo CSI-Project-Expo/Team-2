@@ -41,7 +41,7 @@ const CompanyDetailsModal = ({ company, isOpen, onClose }) => {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={onClose}
-                    style={{ zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)' }}
+                    style={{ zIndex: 9999, position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)' }}
                 >
                     <motion.div
                         className="sdash-modal"
@@ -50,10 +50,10 @@ const CompanyDetailsModal = ({ company, isOpen, onClose }) => {
                         exit={{ opacity: 0, y: 30, scale: 0.95 }}
                         transition={{ duration: 0.3 }}
                         onClick={e => e.stopPropagation()}
-                        style={{ maxWidth: '600px', width: '90%', background: '#ffffff', border: '1px solid #eaeaea', borderRadius: '16px', padding: '30px', boxShadow: '0 10px 40px rgba(0,0,0,0.08)' }}
+                        style={{ maxWidth: '600px', width: '90%', background: '#ffffff', border: '1px solid #eaeaea', borderRadius: '16px', padding: '30px', boxShadow: '0 10px 40px rgba(0,0,0,0.08)', position: 'relative' }}
                     >
-                        <button className="sdash-modal-close" onClick={onClose} style={{ top: 15, right: 15, background: '#f5f5f5', border: 'none', color: '#333' }}>
-                            <FiX size={20} />
+                        <button className="sdash-modal-close" onClick={onClose} style={{ position: 'absolute', top: 15, right: 15, background: '#f5f5f5', border: 'none', color: '#333', borderRadius: '50%', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyItems: 'center', cursor: 'pointer' }}>
+                            <FiX size={18} />
                         </button>
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px', borderBottom: '1px solid #eaeaea', paddingBottom: '16px' }}>
@@ -82,7 +82,7 @@ const CompanyDetailsModal = ({ company, isOpen, onClose }) => {
                                 Company Description
                             </div>
                             <p style={{ margin: 0, color: '#444', lineHeight: 1.6, fontSize: '0.95rem' }}>
-                                {description}
+                                {company.description || description}
                             </p>
                         </div>
 

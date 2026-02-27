@@ -5,7 +5,6 @@ import './DashboardSidebar.css';
 
 const studentNav = [
     { icon: <FiHome size={18} />, label: 'Overview', path: '/dashboard/student' },
-    { icon: <FiFileText size={18} />, label: 'Resume', path: '/dashboard/student/resume' },
     { icon: <FiBriefcase size={18} />, label: 'Applications', path: '/dashboard/student/applications' },
     { icon: <FiBookmark size={18} />, label: 'Saved Jobs', path: '/dashboard/student/saved' },
     { icon: <FiSettings size={18} />, label: 'Settings', path: '/dashboard/student/settings' },

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import {
     FiBriefcase, FiCheckCircle, FiStar, FiUpload, FiTrendingUp,
-    FiEye, FiCalendar, FiX, FiMapPin, FiBookmark
+    FiEye, FiCalendar, FiX, FiMapPin, FiBookmark, FiFileText, FiMail
 } from 'react-icons/fi';
 import DashboardSidebar from '../components/dashboard/DashboardSidebar';
 import JobCard from '../components/browse/JobCard';

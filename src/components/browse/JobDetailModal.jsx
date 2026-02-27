@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     FiX, FiMapPin, FiBriefcase, FiDollarSign, FiClock,
     FiUpload, FiCheckCircle, FiAlertCircle, FiZap, FiStar,
-    FiUsers, FiCalendar, FiLink
+    FiUsers, FiCalendar, FiLink, FiTag
 } from 'react-icons/fi';
 import { useResume } from '../../context/ResumeContext';
 import './JobDetailModal.css';

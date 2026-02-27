@@ -94,7 +94,6 @@ const Navbar = ({ variant = 'landing', searchQuery, onSearchChange }) => {
                     ) : (
                         <div className="navbar__links">
                             {navLinks.map(link => {
-                                // For hash links, use normal anchor. For routes, use React Router Link
                                 if (link.path.includes('#')) {
                                     return (
                                         <a
@@ -135,7 +134,6 @@ const Navbar = ({ variant = 'landing', searchQuery, onSearchChange }) => {
                                 <Link to="/register" className="btn btn-gold btn-sm">Sign Up</Link>
                             </>
                         )}
-
                         <button className="mobile-menu-btn" onClick={() => setMobileOpen(!mobileOpen)}>
                             {mobileOpen ? <FiX size={22} /> : <FiMenu size={22} />}
                         </button>
