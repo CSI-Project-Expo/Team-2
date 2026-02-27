@@ -21,8 +21,13 @@ const JobDetailModal = ({ job, onClose }) => {
     if (!job) return null;
 
     const handleFile = (file) => {
-        if (file && ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type)) {
-            setResumeFile(file);
+        if (file) {
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (['pdf', 'doc', 'docx'].includes(ext)) {
+                setResumeFile(file);
+            } else {
+                alert('Please upload a valid PDF, DOC, or DOCX file.');
+            }
         }
     };
 
@@ -33,22 +38,41 @@ const JobDetailModal = ({ job, onClose }) => {
         handleFile(file);
     };
 
+    const [cgpa, setCgpa] = useState('');
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!resumeFile || !studentName.trim()) return;
+        if (!resumeFile || !studentName.trim() || !cgpa.trim()) return;
+
+        // Block applying to mock jobs (IDs that look like '1', '2' instead of Mongo ObjectIds)
+        if (typeof job.id === 'number' || job.id.toString().length < 24) {
+            alert("This is a mock job post and cannot be applied to. Please apply to jobs created by recruiters.");
+            return;
+        }
+
         setSubmitting(true);
 
         try {
-            const formData = new FormData();
-            formData.append('resume', resumeFile);
-
             const token = localStorage.getItem('token');
+
+            // First upload the resume and save CGPA to profile
+            const uploadFormData = new FormData();
+            uploadFormData.append('resume', resumeFile);
+            uploadFormData.append('cgpa', cgpa);
+
+            await fetch('http://localhost:5000/api/upload', {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}` },
+                body: uploadFormData
+            });
+
+            // Then apply to the job
             const res = await fetch(`http://localhost:5000/api/jobs/${job.id}/apply`, {
                 method: 'POST',
                 headers: {
+                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
                 },
-                body: formData
             });
 
             if (res.ok) {
@@ -220,6 +244,21 @@ const JobDetailModal = ({ job, onClose }) => {
                                             required
                                         />
                                     </div>
+                                    {/* CGPA Input */}
+                                    <div className="jdm-field">
+                                        <label className="jdm-label">CGPA (Out of 10) <span className="jdm-required">*</span></label>
+                                        <input
+                                            className="jdm-input"
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            max="10"
+                                            placeholder="e.g. 8.5"
+                                            value={cgpa}
+                                            onChange={e => setCgpa(e.target.value)}
+                                            required
+                                        />
+                                    </div>
 
                                     {/* Resume Upload */}
                                     <div className="jdm-field">
@@ -257,17 +296,17 @@ const JobDetailModal = ({ job, onClose }) => {
                                     </div>
 
                                     {/* Warning if incomplete */}
-                                    {(!resumeFile || !studentName.trim()) && (
+                                    {(!resumeFile || !studentName.trim() || !cgpa.trim()) && (
                                         <div className="jdm-warning">
                                             <FiAlertCircle size={14} />
-                                            <span>Please fill in your name and upload a resume to submit.</span>
+                                            <span>Please fill in your name, CGPA, and upload a resume to submit.</span>
                                         </div>
                                     )}
 
                                     <button
                                         type="submit"
                                         className="jdm-submit-btn"
-                                        disabled={!resumeFile || !studentName.trim() || submitting}
+                                        disabled={!resumeFile || !studentName.trim() || !cgpa.trim() || submitting}
                                     >
                                         {submitting ? (
                                             <span className="jdm-spinner" />

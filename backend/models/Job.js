@@ -54,6 +54,10 @@ const jobSchema = mongoose.Schema(
                     type: String,
                     default: 'Applied',
                 },
+                aiScore: {
+                    type: Number,
+                    default: null,
+                }
             },
         ],
     },

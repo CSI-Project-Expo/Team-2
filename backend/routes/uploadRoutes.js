@@ -52,7 +52,7 @@ router.post('/', protect, student, upload.single('resume'), async (req, res) => 
 
     const resumeUrl = `/${req.file.path.replace(/\\/g, '/')}`;
     let resumeText = '';
-    let cgpa = 0;
+    let cgpa = req.body.cgpa ? parseFloat(req.body.cgpa) : 0; // Check manual CGPA input first
 
     try {
         if (req.file.mimetype === 'application/pdf') {
@@ -60,12 +60,14 @@ router.post('/', protect, student, upload.single('resume'), async (req, res) => 
             const data = await pdfParse(dataBuffer);
             resumeText = data.text;
 
-            // Try to extract CGPA
-            const cgpaMatch = resumeText.match(/cgpa[\s:]*([0-9.]+)/i);
-            if (cgpaMatch && cgpaMatch[1]) {
-                const parsedCgpa = parseFloat(cgpaMatch[1]);
-                if (!isNaN(parsedCgpa) && parsedCgpa <= 10) {
-                    cgpa = parsedCgpa;
+            // Try to extract CGPA from text only if not provided manually
+            if (!cgpa) {
+                const cgpaMatch = resumeText.match(/cgpa[\s:]*([0-9.]+)/i);
+                if (cgpaMatch && cgpaMatch[1]) {
+                    const parsedCgpa = parseFloat(cgpaMatch[1]);
+                    if (!isNaN(parsedCgpa) && parsedCgpa <= 10) {
+                        cgpa = parsedCgpa;
+                    }
                 }
             }
         }

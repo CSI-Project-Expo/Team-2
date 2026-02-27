@@ -405,7 +405,7 @@ const StudentDashboard = () => {
                                                 className="btn btn-outline-gold btn-sm"
                                                 style={{ display: 'block', marginTop: 8, fontSize: '0.8rem', padding: '4px 10px', width: 'fit-content', marginLeft: 'auto' }}
                                             >
-                                                <FiMail size={12} style={{ marginRight: 4 }} /> Contact Recruiter
+                                                <FiMail size={12} style={{ marginRight: 4 }} /> Contact Recruiter ({app.recruiterEmail})
                                             </a>
                                         )}
                                         <div className="app-date" style={{ fontSize: '0.8rem', marginTop: '6px' }}>Applied on {app.date}</div>

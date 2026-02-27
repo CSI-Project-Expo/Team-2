@@ -55,9 +55,36 @@ const applyJob = async (req, res) => {
                 return res.status(400).json({ message: 'You have already applied for this job' });
             }
 
-            job.applicants.push({ student: req.user._id, status: 'Applied' });
+            // Calculate initial AI Score for immediate frontend display
+            let aiScore = 40; // Base score
+            const jobReqs = job.requirements || [];
+            const text = (req.user.resumeText || '').toLowerCase(); // Note: resume is now populated on user profile
+            const cgpa = req.user.cgpa || 0;
+
+            if (jobReqs.length > 0) {
+                let matchCount = 0;
+                jobReqs.forEach(req => {
+                    if (text.includes(req.toLowerCase())) {
+                        matchCount++;
+                    }
+                });
+                aiScore += Math.min(40, (matchCount / jobReqs.length) * 40);
+            } else {
+                aiScore += 20;
+            }
+
+            if (cgpa >= 9) aiScore += 20;
+            else if (cgpa >= 8) aiScore += 15;
+            else if (cgpa >= 7) aiScore += 10;
+            else if (cgpa >= 6) aiScore += 5;
+
+            aiScore = Math.round(Math.min(100, aiScore));
+
+            const newApplicant = { student: req.user._id, status: 'Applied', aiScore };
+            job.applicants.push(newApplicant);
             await job.save();
-            res.status(200).json({ message: 'Application successful' });
+
+            res.status(200).json({ message: 'Application successful', applicant: newApplicant });
         } else {
             res.status(404).json({ message: 'Job not found' });
         }
@@ -169,22 +196,34 @@ const updateApplicantStatus = async (req, res) => {
                 applicant.status = status;
                 await job.save();
 
-                // Simulate sending email setup
-                nodemailer.createTestAccount((err, account) => {
-                    if (err) {
-                        console.error('Failed to create a testing account. ' + err.message);
-                        return;
+                // Send email notification
+                const sendNotificationEmail = async () => {
+                    let transporter;
+
+                    // If user has actual SMTP credentials in .env, use them (e.g., Gmail App Password)
+                    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+                        transporter = nodemailer.createTransport({
+                            host: process.env.SMTP_HOST,
+                            port: process.env.SMTP_PORT || 587,
+                            secure: process.env.SMTP_PORT == 465, // true for 465, false for other ports
+                            auth: {
+                                user: process.env.SMTP_USER,
+                                pass: process.env.SMTP_PASS
+                            }
+                        });
+                    } else {
+                        // Fallback to ethereal test account
+                        let testAccount = await nodemailer.createTestAccount();
+                        transporter = nodemailer.createTransport({
+                            host: testAccount.smtp.host,
+                            port: testAccount.smtp.port,
+                            secure: testAccount.smtp.secure,
+                            auth: {
+                                user: testAccount.user,
+                                pass: testAccount.pass
+                            }
+                        });
                     }
-                    // Create a SMTP transporter object
-                    let transporter = nodemailer.createTransport({
-                        host: account.smtp.host,
-                        port: account.smtp.port,
-                        secure: account.smtp.secure,
-                        auth: {
-                            user: account.user,
-                            pass: account.pass
-                        }
-                    });
 
                     let subject = '';
                     let text = '';
@@ -204,15 +243,15 @@ const updateApplicantStatus = async (req, res) => {
                         text: text,
                     };
 
-                    transporter.sendMail(message, (err, info) => {
-                        if (err) {
-                            console.log('Error occurred. ' + err.message);
-                            return;
-                        }
-                        console.log('Message sent: %s', info.messageId);
+                    let info = await transporter.sendMail(message);
+                    console.log('Message sent: %s', info.messageId);
+
+                    if (!process.env.SMTP_HOST) {
                         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-                    });
-                });
+                    }
+                };
+
+                sendNotificationEmail().catch(console.error);
 
                 res.json({ message: `Applicant status updated to ${status}` });
             } else {
