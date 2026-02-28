@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiUser, FiMail, FiLock, FiPhone, FiBriefcase, FiArrowLeft, FiArrowRight, FiCheck } from 'react-icons/fi';
 import './AuthPages.css';
@@ -25,9 +26,30 @@ const RegisterPage = () => {
     const [formData, setFormData] = useState({});
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const [otpSent, setOtpSent] = useState(false);
+    const [otpTimer, setOtpTimer] = useState(600); // 10 minutes in seconds
+    const [otpExpired, setOtpExpired] = useState(false);
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+    React.useEffect(() => {
+        let interval;
+        if (otpSent && otpTimer > 0) {
+            interval = setInterval(() => {
+                setOtpTimer((prev) => prev - 1);
+            }, 1000);
+        } else if (otpTimer === 0) {
+            setOtpExpired(true);
+            clearInterval(interval);
+        }
+        return () => clearInterval(interval);
+    }, [otpSent, otpTimer]);
+
+    const formatTime = (seconds) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
+    };
 
     const fields = role === 'student' ? studentFields : recruiterFields;
 
@@ -61,18 +83,35 @@ const RegisterPage = () => {
 
         // Check local validation errors first
         if (Object.values(errors).some(err => err !== '')) {
-            alert('Please fix the errors before proceeding.');
+            toast.error('Please fix the errors before proceeding.');
             return;
         }
 
         if (role === 'recruiter') {
-            // Proceed to OTP step for recruiters
             setLoading(true);
-            setTimeout(() => {
+            try {
+                const payloadEmail = formData.companyEmail;
+                const res = await fetch('http://localhost:5000/api/auth/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: payloadEmail }),
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    toast.success('OTP sent successfully');
+                    setStep(3);
+                    setOtpSent(true);
+                    setOtpExpired(false);
+                    setOtpTimer(600);
+                } else {
+                    toast.error(data.message || 'Error sending OTP');
+                }
+            } catch (error) {
+                console.error('Error sending OTP', error);
+                toast.error('Something went wrong. Please try again.');
+            } finally {
                 setLoading(false);
-                setStep(3);
-                setOtpSent(true);
-            }, 1000); // Simulate API call to send OTP
+            }
         } else {
             // Students can register directly
             registerUser();
@@ -104,30 +143,55 @@ const RegisterPage = () => {
 
     const handleVerifyOtp = async (e) => {
         e.preventDefault();
+
+        if (otpExpired) {
+            alert('OTP has expired. Please resend.');
+            return;
+        }
+
         const enteredOtp = otp.join('');
         if (enteredOtp.length !== 6) {
             alert('Please enter a valid 6-digit OTP.');
             return;
         }
 
-        setLoading(true);
-        // Simulate OTP verification logic
-        setTimeout(() => {
-            if (enteredOtp === '123456') { // Mock valid OTP
-                registerUser();
-            } else {
-                setLoading(false);
-                alert('Invalid OTP. Please try again. (Hint: use 123456)');
-            }
-        }, 1500);
+        // Call register logic, auth controller handles verification
+        registerUser(enteredOtp);
     };
 
-    const registerUser = async () => {
+    const handleResendOtp = async () => {
+        setLoading(true);
+        try {
+            const payloadEmail = formData.companyEmail;
+            const res = await fetch('http://localhost:5000/api/auth/send-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: payloadEmail }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                toast.success('OTP sent successfully');
+                setOtp(['', '', '', '', '', '']);
+                setOtpExpired(false);
+                setOtpTimer(600);
+            } else {
+                toast.error(data.message || 'Error sending OTP');
+            }
+        } catch (error) {
+            console.error('Error sending OTP', error);
+            toast.error('Something went wrong. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const registerUser = async (enteredOtp = '') => {
         setLoading(true);
         try {
             const payload = { ...formData, role };
-            if (role === 'recruiter' && payload.companyEmail) {
+            if (role === 'recruiter') {
                 payload.email = payload.companyEmail;
+                payload.otp = enteredOtp;
             }
 
             const res = await fetch('http://localhost:5000/api/auth/register', {
@@ -138,6 +202,7 @@ const RegisterPage = () => {
             const data = await res.json();
 
             if (res.ok) {
+                toast.success('Registration successful!');
                 localStorage.setItem('userInfo', JSON.stringify(data));
                 localStorage.setItem('token', data.token);
                 if (data.role === 'recruiter') {
@@ -146,11 +211,11 @@ const RegisterPage = () => {
                     navigate('/dashboard/student');
                 }
             } else {
-                alert(data.message || 'Registration failed');
+                toast.error(data.message || 'Registration failed');
             }
         } catch (error) {
             console.error('Registration error', error);
-            alert('Something went wrong. Make sure backend is running.');
+            toast.error('Something went wrong. Make sure backend is running.');
         } finally {
             setLoading(false);
         }
@@ -358,14 +423,18 @@ const RegisterPage = () => {
                                         ))}
                                     </div>
                                     <div className="form-hint" style={{ textAlign: 'center', marginBottom: '24px' }}>
-                                        Hint: Use <strong style={{ color: 'var(--gold-primary)' }}>123456</strong> to bypass verification
+                                        {otpExpired ? (
+                                            <strong style={{ color: 'var(--danger-color, #ff4d4f)' }}>OTP has expired</strong>
+                                        ) : (
+                                            <>Time remaining: <strong style={{ color: 'var(--gold-primary)' }}>{formatTime(otpTimer)}</strong></>
+                                        )}
                                     </div>
 
                                     <button
                                         type="submit"
                                         className={`btn btn-gold btn-lg auth-submit ${loading ? 'loading' : ''}`}
-                                        disabled={loading || otp.join('').length !== 6}
-                                        style={{ width: '100%', justifyContent: 'center' }}
+                                        disabled={loading || otp.join('').length !== 6 || otpExpired}
+                                        style={{ width: '100%', justifyContent: 'center', opacity: otpExpired ? 0.5 : 1 }}
                                     >
                                         {loading ? <span className="spinner" /> : 'Verify & Setup Account'}
                                     </button>
@@ -375,9 +444,11 @@ const RegisterPage = () => {
                                     <button className="auth-back-step" onClick={() => { setStep(2); setOtp(['', '', '', '', '', '']); }} disabled={loading}>
                                         <FiArrowLeft size={14} /> Back
                                     </button>
-                                    <button className="auth-back-step" style={{ color: 'var(--blue-accent)' }} disabled={loading}>
-                                        Resend Code
-                                    </button>
+                                    {otpExpired && (
+                                        <button className="auth-back-step" style={{ color: 'var(--blue-accent)' }} onClick={handleResendOtp} disabled={loading}>
+                                            Resend Code
+                                        </button>
+                                    )}
                                 </div>
                             </motion.div>
                         )}

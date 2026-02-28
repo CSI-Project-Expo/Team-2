@@ -6,6 +6,7 @@ import {
     FiUsers, FiCalendar, FiLink, FiTag
 } from 'react-icons/fi';
 import { useResume } from '../../context/ResumeContext';
+import toast from 'react-hot-toast';
 import './JobDetailModal.css';
 
 const JobDetailModal = ({ job, onClose }) => {
@@ -26,7 +27,7 @@ const JobDetailModal = ({ job, onClose }) => {
             if (['pdf', 'doc', 'docx'].includes(ext)) {
                 setResumeFile(file);
             } else {
-                alert('Please upload a valid PDF, DOC, or DOCX file.');
+                toast.error('Please upload a valid PDF, DOC, or DOCX file.');
             }
         }
     };
@@ -46,7 +47,7 @@ const JobDetailModal = ({ job, onClose }) => {
 
         // Block applying to mock jobs (IDs that look like '1', '2' instead of Mongo ObjectIds)
         if (typeof job.id === 'number' || job.id.toString().length < 24) {
-            alert("This is a mock job post and cannot be applied to. Please apply to jobs created by recruiters.");
+            toast.error("This is a mock job post and cannot be applied to. Please apply to jobs created by recruiters.");
             return;
         }
 
@@ -68,7 +69,7 @@ const JobDetailModal = ({ job, onClose }) => {
 
             if (!uploadRes.ok) {
                 const errorData = await uploadRes.json();
-                alert(`Upload failed: ${errorData.message || 'Unknown error'}`);
+                toast.error(`Upload failed: ${errorData.message || 'Unknown error'}`);
                 setSubmitting(false);
                 return;
             }
@@ -88,11 +89,11 @@ const JobDetailModal = ({ job, onClose }) => {
                 setSubmitted(true);
             } else {
                 const data = await res.json();
-                alert(`Error: ${data.message}`);
+                toast.error(`Error: ${data.message}`);
             }
         } catch (err) {
             console.error(err);
-            alert('Something went wrong submitting your application.');
+            toast.error('Something went wrong submitting your application.');
         } finally {
             setSubmitting(false);
         }

@@ -8,6 +8,7 @@ import {
 import DashboardSidebar from '../components/dashboard/DashboardSidebar';
 import JobCard from '../components/browse/JobCard';
 import { useResume } from '../context/ResumeContext';
+import toast from 'react-hot-toast';
 import './Dashboard.css';
 
 const statusColor = {
@@ -89,7 +90,6 @@ const StudentDashboard = () => {
 
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
-        alert('Sending Name: ' + editName + ' Email: ' + editEmail);
         try {
             const token = localStorage.getItem('token');
             const res = await fetch('http://localhost:5000/api/auth/profile', {
@@ -106,14 +106,14 @@ const StudentDashboard = () => {
                 localStorage.setItem('userInfo', JSON.stringify(data));
                 setUser(data);
                 window.dispatchEvent(new Event('userUpdated'));
-                alert('Profile updated successfully!');
+                toast.success('Profile updated successfully!');
             } else {
                 const data = await res.json();
-                alert(`Error: ${data.message}`);
+                toast.error(`Error: ${data.message}`);
             }
         } catch (err) {
             console.error(err);
-            alert('Something went wrong.');
+            toast.error('Something went wrong.');
         }
     };
 
@@ -181,11 +181,11 @@ const StudentDashboard = () => {
                 }, 1800);
             } else {
                 const data = await res.json();
-                alert(data.message || 'Failed to upload resume');
+                toast.error(data.message || 'Failed to upload resume');
             }
         } catch (error) {
             console.error('Upload Error', error);
-            alert('Something went wrong during file upload.');
+            toast.error('Something went wrong during file upload.');
         }
     };
 

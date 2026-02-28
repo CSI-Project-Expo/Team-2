@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowLeft } from 'react-icons/fi';
 import ThreeScene from '../components/common/ThreeScene';
@@ -24,6 +25,7 @@ const LoginPage = () => {
             const data = await res.json();
 
             if (res.ok) {
+                toast.success('Login successful!');
                 localStorage.setItem('userInfo', JSON.stringify(data));
                 localStorage.setItem('token', data.token);
                 if (data.role === 'recruiter') {
@@ -32,11 +34,11 @@ const LoginPage = () => {
                     navigate('/dashboard/student');
                 }
             } else {
-                alert(data.message || 'Login failed');
+                toast.error(data.message || 'Login failed');
             }
         } catch (error) {
             console.error('Login error', error);
-            alert('Something went wrong. Make sure backend is running.');
+            toast.error('Something went wrong. Make sure backend is running.');
         } finally {
             setLoading(false);
         }

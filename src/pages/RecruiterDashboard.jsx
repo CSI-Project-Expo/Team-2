@@ -5,6 +5,7 @@ import {
     FiBriefcase, FiUsers, FiMessageCircle, FiPlusCircle, FiTrendingUp,
     FiFileText, FiEye, FiDownload, FiX, FiAward, FiCheckSquare, FiCheckCircle
 } from 'react-icons/fi';
+import toast from 'react-hot-toast';
 import DashboardSidebar from '../components/dashboard/DashboardSidebar';
 import PostJobModal from '../components/dashboard/PostJobModal';
 import { useResume } from '../context/ResumeContext';
@@ -28,7 +29,6 @@ const RecruiterDashboard = () => {
     const [selectedJob, setSelectedJob] = useState('all');
     const [showPostModal, setShowPostModal] = useState(false);
     const [newJobs, setNewJobs] = useState([]);
-    const [toast, setToast] = useState(null);
     const [fetchedJobs, setFetchedJobs] = useState([]);
 
     const location = useLocation();
@@ -65,15 +65,14 @@ const RecruiterDashboard = () => {
                 localStorage.setItem('userInfo', JSON.stringify(data));
                 setUser(data);
                 window.dispatchEvent(new Event('userUpdated'));
-                setToast('Profile updated successfully!');
-                setTimeout(() => setToast(null), 3000);
+                toast.success('Profile updated successfully!');
             } else {
                 const data = await res.json();
-                alert(`Error: ${data.message}`);
+                toast.error(`Error: ${data.message}`);
             }
         } catch (err) {
             console.error(err);
-            alert('Something went wrong.');
+            toast.error('Something went wrong.');
         }
     };
 
@@ -147,15 +146,14 @@ const RecruiterDashboard = () => {
             if (res.ok) {
                 setNewJobs(prev => [job, ...prev]);
                 console.log('[RecruiterDashboard] New job posted:', job);
-                setToast(`"${job.title}" posted successfully!`);
-                setTimeout(() => setToast(null), 3500);
+                toast.success(`"${job.title}" posted successfully!`);
             } else {
                 const errorData = await res.json();
-                alert(`Failed to post job: ${errorData.message}`);
+                toast.error(`Failed to post job: ${errorData.message}`);
             }
         } catch (error) {
             console.error('Error posting job:', error);
-            alert('Something went wrong while posting the job.');
+            toast.error('Something went wrong while posting the job.');
         }
     };
 
@@ -209,11 +207,10 @@ const RecruiterDashboard = () => {
             });
             if (res.ok) {
                 setFetchedJobs(prev => prev.filter(j => j._id !== id));
-                setToast('Job deleted successfully');
-                setTimeout(() => setToast(null), 3000);
+                toast.success('Job deleted successfully');
             } else {
                 const data = await res.json();
-                alert(`Failed to delete job: ${data.message || 'Server error'}`);
+                toast.error(`Failed to delete job: ${data.message || 'Server error'}`);
                 console.error("Delete failed", data);
             }
         } catch (err) {
@@ -233,7 +230,7 @@ const RecruiterDashboard = () => {
                 body: JSON.stringify({ status })
             });
             if (res.ok) {
-                setToast(`Applicant ${status.toLowerCase()} and email sent!`);
+                toast.success(`Applicant ${status.toLowerCase()} and email sent!`);
                 setViewingResume({ ...app, status });
                 setFetchedJobs(prev => prev.map(job => {
                     if (job._id === app.jobId) {
@@ -246,9 +243,8 @@ const RecruiterDashboard = () => {
                     }
                     return job;
                 }));
-                setTimeout(() => setToast(null), 3500);
             } else {
-                alert(`Failed to ${status.toLowerCase()} applicant`);
+                toast.error(`Failed to ${status.toLowerCase()} applicant`);
             }
         } catch (err) {
             console.error(err);
@@ -676,21 +672,6 @@ const RecruiterDashboard = () => {
                         onClose={() => setShowPostModal(false)}
                         onSubmit={handlePostJob}
                     />
-                )}
-            </AnimatePresence>
-
-            {/* Success Toast */}
-            <AnimatePresence>
-                {toast && (
-                    <motion.div
-                        className="rd-toast"
-                        initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                    >
-                        <FiCheckCircle size={18} />
-                        {toast}
-                    </motion.div>
                 )}
             </AnimatePresence>
         </div>

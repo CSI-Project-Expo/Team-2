@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Toaster } from 'react-hot-toast';
 
 import { ResumeProvider } from './context/ResumeContext';
 import CursorFollower from './components/common/CursorFollower';
@@ -38,30 +39,33 @@ const AppRoutes = () => {
     }, [location.pathname]);
 
     return (
-        <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
-                <Route path="/" element={<PageTransition><LandingPage /></PageTransition>} />
-                <Route path="/jobs" element={<PageTransition><JobsPage /></PageTransition>} />
-                <Route path="/companies" element={<PageTransition><CompaniesPage /></PageTransition>} />
-                <Route path="/about" element={<PageTransition><AboutPage /></PageTransition>} />
-                <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
-                <Route path="/register" element={<PageTransition><RegisterPage /></PageTransition>} />
+        <>
+            <Toaster position="top-center" />
+            <AnimatePresence mode="wait">
+                <Routes location={location} key={location.pathname}>
+                    <Route path="/" element={<PageTransition><LandingPage /></PageTransition>} />
+                    <Route path="/jobs" element={<PageTransition><JobsPage /></PageTransition>} />
+                    <Route path="/companies" element={<PageTransition><CompaniesPage /></PageTransition>} />
+                    <Route path="/about" element={<PageTransition><AboutPage /></PageTransition>} />
+                    <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
+                    <Route path="/register" element={<PageTransition><RegisterPage /></PageTransition>} />
 
-                {/* Protected Student Routes */}
-                <Route path="/dashboard/student/*" element={<ProtectedRoute allowedRole="student"><PageTransition><StudentDashboard /></PageTransition></ProtectedRoute>} />
-                <Route path="/dashboard/student/chat" element={<ProtectedRoute allowedRole="student"><PageTransition><ChatPage role="student" /></PageTransition></ProtectedRoute>} />
+                    {/* Protected Student Routes */}
+                    <Route path="/dashboard/student/*" element={<ProtectedRoute allowedRole="student"><PageTransition><StudentDashboard /></PageTransition></ProtectedRoute>} />
+                    <Route path="/dashboard/student/chat" element={<ProtectedRoute allowedRole="student"><PageTransition><ChatPage role="student" /></PageTransition></ProtectedRoute>} />
 
-                {/* Protected Recruiter Routes */}
-                <Route path="/dashboard/recruiter/*" element={<ProtectedRoute allowedRole="recruiter"><PageTransition><RecruiterDashboard /></PageTransition></ProtectedRoute>} />
-                <Route path="/dashboard/recruiter/chat" element={<ProtectedRoute allowedRole="recruiter"><PageTransition><ChatPage role="recruiter" /></PageTransition></ProtectedRoute>} />
+                    {/* Protected Recruiter Routes */}
+                    <Route path="/dashboard/recruiter/*" element={<ProtectedRoute allowedRole="recruiter"><PageTransition><RecruiterDashboard /></PageTransition></ProtectedRoute>} />
+                    <Route path="/dashboard/recruiter/chat" element={<ProtectedRoute allowedRole="recruiter"><PageTransition><ChatPage role="recruiter" /></PageTransition></ProtectedRoute>} />
 
-                {/* Protected Admin Routes */}
-                <Route path="/dashboard/admin" element={<ProtectedRoute allowedRole="admin"><PageTransition><AdminDashboard /></PageTransition></ProtectedRoute>} />
+                    {/* Protected Admin Routes */}
+                    <Route path="/dashboard/admin" element={<ProtectedRoute allowedRole="admin"><PageTransition><AdminDashboard /></PageTransition></ProtectedRoute>} />
 
-                {/* Catch-all redirect */}
-                <Route path="*" element={<PageTransition><LandingPage /></PageTransition>} />
-            </Routes>
-        </AnimatePresence>
+                    {/* Catch-all redirect */}
+                    <Route path="*" element={<PageTransition><LandingPage /></PageTransition>} />
+                </Routes>
+            </AnimatePresence>
+        </>
     );
 };
 

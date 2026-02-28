@@ -1,5 +1,57 @@
 import User from '../models/User.js';
+import OTP from '../models/OTP.js';
 import generateToken from '../utils/generateToken.js';
+import sendEmail from '../utils/sendEmail.js';
+
+// @desc    Send OTP to email for user registration (Recruiters only expected)
+// @route   POST /api/auth/send-otp
+// @access  Public
+const sendOtp = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: 'Please provide an email' });
+        }
+
+        const userExists = await User.findOne({ email });
+
+        if (userExists) {
+            return res.status(400).json({ message: 'User already exists' });
+        }
+
+        // Generate a 6-digit random number
+        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Delete any existing OTP for this email
+        await OTP.deleteMany({ email });
+
+        // Save the new OTP to the database
+        await OTP.create({
+            email,
+            otp: otpCode,
+        });
+
+        // Send the OTP via email
+        try {
+            await sendEmail({
+                email,
+                subject: 'Your OTP Verification Code',
+                message: `Your OTP is ${otpCode}. It is valid for 10 minutes.`,
+            });
+
+            res.status(200).json({ success: true, message: 'OTP sent successfully' });
+        } catch (error) {
+            console.error('Email send error:', error);
+            // Delete OTP from DB if email failed to send
+            await OTP.deleteMany({ email });
+            return res.status(500).json({ message: 'Error sending email. Please try again.' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
 
 // @desc    Auth user & get token
 // @route   POST /api/auth/login
@@ -33,12 +85,35 @@ const authUser = async (req, res) => {
 // @access  Public
 const registerUser = async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password, role, otp } = req.body;
 
         const userExists = await User.findOne({ email });
 
         if (userExists) {
             return res.status(400).json({ message: 'User already exists' });
+        }
+
+        // Recruiter requires OTP verification
+        if (role === 'recruiter') {
+            if (!otp) {
+                return res.status(400).json({ message: 'OTP is required for recruiters' });
+            }
+
+            // Retrieve the OTP document from the DB
+            const otpRecord = await OTP.findOne({ email });
+
+            if (!otpRecord) {
+                return res.status(400).json({ message: 'OTP has expired. Please resend.' });
+            }
+
+            const isMatch = await otpRecord.matchOtp(otp);
+
+            if (!isMatch) {
+                return res.status(400).json({ message: 'Invalid OTP' });
+            }
+
+            // Valid OTP, so clean it up
+            await OTP.deleteMany({ email });
         }
 
         const user = await User.create({
@@ -114,4 +189,4 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
-export { authUser, registerUser, updateUserProfile };
+export { authUser, registerUser, updateUserProfile, sendOtp };
