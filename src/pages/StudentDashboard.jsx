@@ -7,6 +7,7 @@ import {
 } from 'react-icons/fi';
 import DashboardSidebar from '../components/dashboard/DashboardSidebar';
 import JobCard from '../components/browse/JobCard';
+import JobDetailModal from '../components/browse/JobDetailModal';
 import { useResume } from '../context/ResumeContext';
 import toast from 'react-hot-toast';
 import ChatWidget from '../components/chat/ChatWidget';
@@ -36,6 +37,7 @@ const StudentDashboard = () => {
     const [applications, setApplications] = useState([]);
     const [fetchedJobs, setFetchedJobs] = useState([]);
     const [savedJobs, setSavedJobs] = useState([]);
+    const [selectedJob, setSelectedJob] = useState(null);
 
     React.useEffect(() => {
         const storedUser = localStorage.getItem('userInfo');
@@ -431,7 +433,7 @@ const StudentDashboard = () => {
                     <motion.div className="browse-grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                         {savedJobs.length > 0 ? (
                             savedJobs.map((job) => (
-                                <JobCard key={job.id} job={job} />
+                                <JobCard key={job.id} job={job} onApply={(job) => setSelectedJob(job)} />
                             ))
                         ) : (
                             <div className="dash-panel glass-card" style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px 20px' }}>
@@ -498,6 +500,16 @@ const StudentDashboard = () => {
                     <ChatSection userRole="student" />
                 )}
             </main>
+
+            {/* Job Detail Modal */}
+            <AnimatePresence>
+                {selectedJob && (
+                    <JobDetailModal
+                        job={selectedJob}
+                        onClose={() => setSelectedJob(null)}
+                    />
+                )}
+            </AnimatePresence>
 
             {/* Resume Upload Modal */}
             <AnimatePresence>
