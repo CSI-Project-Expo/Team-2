@@ -14,6 +14,7 @@ const recruiterNav = [
     { icon: <FiHome size={18} />, label: 'Overview', path: '/dashboard/recruiter' },
     { icon: <FiBriefcase size={18} />, label: 'Post Job', path: '/dashboard/recruiter#post-job' },
     { icon: <FiUsers size={18} />, label: 'Applicants', path: '/dashboard/recruiter#applicants' },
+    { icon: <FiMessageCircle size={18} />, label: 'Chats', path: '/dashboard/recruiter#chats' },
     { icon: <FiSettings size={18} />, label: 'Settings', path: '/dashboard/recruiter/settings' },
 ];
 

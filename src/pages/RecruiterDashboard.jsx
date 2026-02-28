@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import DashboardSidebar from '../components/dashboard/DashboardSidebar';
 import PostJobModal from '../components/dashboard/PostJobModal';
 import { useResume } from '../context/ResumeContext';
-import ChatWidget from '../components/chat/ChatWidget';
+import ChatSection from '../components/chat/ChatSection';
 import './Dashboard.css';
 import './RecruiterDashboard.css';
 
@@ -118,6 +118,9 @@ const RecruiterDashboard = () => {
                         window.scrollTo({ top: y, behavior: 'smooth' });
                     }
                 }, 100);
+                window.history.replaceState('', document.title, window.location.pathname);
+            } else if (location.hash === '#chats') {
+                setCurrentView('chats');
                 window.history.replaceState('', document.title, window.location.pathname);
             }
         }
@@ -255,26 +258,31 @@ const RecruiterDashboard = () => {
     return (
         <div className="dashboard-layout">
             <DashboardSidebar role="recruiter" />
-            <main className="dashboard-main">
-                {/* Header */}
-                <div className="dashboard-header">
-                    {currentView === 'overview' ? (
-                        <>
+            <main
+                className="dashboard-main"
+                style={currentView === 'chats' ? { padding: 0 } : {}}
+            >
+                {/* Header conditionally rendered */}
+                {currentView !== 'chats' && (
+                    <div className="dashboard-header">
+                        {currentView === 'overview' ? (
+                            <>
+                                <div>
+                                    <h1 className="dashboard-title">Recruiter <span className="text-gold">Hub</span></h1>
+                                    <p className="dashboard-subtitle">Manage your job posts and find top talent.</p>
+                                </div>
+                                <button className="btn btn-gold btn-sm" onClick={() => setShowPostModal(true)}>
+                                    <FiPlusCircle size={14} /> Post New Job
+                                </button>
+                            </>
+                        ) : (
                             <div>
-                                <h1 className="dashboard-title">Recruiter <span className="text-gold">Hub</span></h1>
-                                <p className="dashboard-subtitle">Manage your job posts and find top talent.</p>
+                                <h1 className="dashboard-title">Account <span className="text-gold">Settings</span></h1>
+                                <p className="dashboard-subtitle">Manage your recruiter profile and preferences.</p>
                             </div>
-                            <button className="btn btn-gold btn-sm" onClick={() => setShowPostModal(true)}>
-                                <FiPlusCircle size={14} /> Post New Job
-                            </button>
-                        </>
-                    ) : (
-                        <div>
-                            <h1 className="dashboard-title">Account <span className="text-gold">Settings</span></h1>
-                            <p className="dashboard-subtitle">Manage your recruiter profile and preferences.</p>
-                        </div>
-                    )}
-                </div>
+                        )}
+                    </div>
+                )}
 
                 {currentView === 'overview' && (
                     <>
@@ -540,6 +548,10 @@ const RecruiterDashboard = () => {
                         </div>
                     </motion.div>
                 )}
+
+                {currentView === 'chats' && (
+                    <ChatSection userRole="recruiter" />
+                )}
             </main>
 
             {/* Resume Detail Viewer */}
@@ -676,7 +688,6 @@ const RecruiterDashboard = () => {
                 )}
             </AnimatePresence>
 
-            <ChatWidget userRole="recruiter" />
         </div>
     );
 };
