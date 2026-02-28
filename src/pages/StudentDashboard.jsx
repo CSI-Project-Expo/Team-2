@@ -9,6 +9,7 @@ import DashboardSidebar from '../components/dashboard/DashboardSidebar';
 import JobCard from '../components/browse/JobCard';
 import { useResume } from '../context/ResumeContext';
 import toast from 'react-hot-toast';
+import ChatWidget from '../components/chat/ChatWidget';
 import './Dashboard.css';
 
 const statusColor = {

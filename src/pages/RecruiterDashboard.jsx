@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import DashboardSidebar from '../components/dashboard/DashboardSidebar';
 import PostJobModal from '../components/dashboard/PostJobModal';
 import { useResume } from '../context/ResumeContext';
+import ChatWidget from '../components/chat/ChatWidget';
 import './Dashboard.css';
 import './RecruiterDashboard.css';
 
@@ -674,6 +675,8 @@ const RecruiterDashboard = () => {
                     />
                 )}
             </AnimatePresence>
+
+            <ChatWidget userRole="recruiter" />
         </div>
     );
 };

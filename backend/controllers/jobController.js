@@ -1,4 +1,6 @@
 import Job from '../models/Job.js';
+import Chat from '../models/Chat.js';
+import nodemailer from 'nodemailer';
 
 // @desc    Create a new job
 // @route   POST /api/jobs
@@ -96,7 +98,6 @@ const applyJob = async (req, res) => {
 // @desc    Get recruiter jobs and applicants
 // @route   GET /api/jobs/recruiter
 // @access  Private/Recruiter
-import nodemailer from 'nodemailer';
 
 const getRecruiterJobs = async (req, res) => {
     try {
@@ -199,6 +200,31 @@ const updateApplicantStatus = async (req, res) => {
             if (applicant) {
                 applicant.status = status;
                 await job.save();
+
+                // On Accept, auto-create Chat and send first message
+                if (status === 'Shortlisted for in-person interview') {
+                    try {
+                        let chat = await Chat.findOne({
+                            studentId: applicant.student._id,
+                            jobId: job._id
+                        });
+                        if (!chat) {
+                            chat = await Chat.create({
+                                studentId: applicant.student._id,
+                                recruiterId: job.recruiter,
+                                jobId: job._id,
+                                messages: [{
+                                    senderId: job.recruiter,
+                                    senderRole: 'recruiter',
+                                    message: 'Your application has been accepted. You can now chat.',
+                                    timestamp: new Date()
+                                }]
+                            });
+                        }
+                    } catch (chatError) {
+                        console.error('Failed to auto-create chat:', chatError);
+                    }
+                }
 
                 // Send email notification
                 const sendNotificationEmail = async () => {
