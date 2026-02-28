@@ -10,6 +10,7 @@ import JobCard from '../components/browse/JobCard';
 import { useResume } from '../context/ResumeContext';
 import toast from 'react-hot-toast';
 import ChatWidget from '../components/chat/ChatWidget';
+import ChatSection from '../components/chat/ChatSection';
 import './Dashboard.css';
 
 const statusColor = {
@@ -26,9 +27,11 @@ const StudentDashboard = () => {
     const [user, setUser] = React.useState(null);
     const location = useLocation();
 
-    // Determine current view from pathname
-    const currentView = location.pathname.split('/').pop();
-    const isOverview = currentView === 'student';
+    // Determine current view from pathname and hash
+    const pathView = location.pathname.split('/').pop();
+    const currentHash = location.hash;
+    const currentView = currentHash === '#chats' ? 'chats' : pathView;
+    const isOverview = pathView === 'student' && currentView !== 'chats';
 
     const [applications, setApplications] = useState([]);
     const [fetchedJobs, setFetchedJobs] = useState([]);
@@ -195,37 +198,39 @@ const StudentDashboard = () => {
     return (
         <div className="dashboard-layout">
             <DashboardSidebar role="student" />
-            <main className="dashboard-main">
-                {/* Header */}
-                <div className="dashboard-header">
-                    {isOverview && (
-                        <div>
-                            <h1 className="dashboard-title">Good morning, <span className="text-gold">{user?.name?.split(' ')[0] || 'Student'}</span> 👋</h1>
-                            <p className="dashboard-subtitle">Here's what's happening with your job search today.</p>
-                        </div>
-                    )}
-                    {currentView === 'applications' && (
-                        <div>
-                            <h1 className="dashboard-title">Your <span className="text-gold">Applications</span></h1>
-                            <p className="dashboard-subtitle">Track the status of roles you've applied for.</p>
-                        </div>
-                    )}
-                    {currentView === 'saved' && (
-                        <div>
-                            <h1 className="dashboard-title">Saved <span className="text-gold">Jobs</span></h1>
-                            <p className="dashboard-subtitle">Opportunities you've bookmarked for later.</p>
-                        </div>
-                    )}
-                    {currentView === 'settings' && (
-                        <div>
-                            <h1 className="dashboard-title">Account <span className="text-gold">Settings</span></h1>
-                            <p className="dashboard-subtitle">Manage your profile and account preferences.</p>
-                        </div>
-                    )}
-                    <button className="btn btn-gold btn-sm" onClick={() => setUploadModal(true)}>
-                        <FiUpload size={14} /> Update Resume
-                    </button>
-                </div>
+            <main className="dashboard-main" style={currentView === 'chats' ? { padding: 0 } : {}}>
+                {/* Header conditionally rendered */}
+                {currentView !== 'chats' && (
+                    <div className="dashboard-header">
+                        {isOverview && (
+                            <div>
+                                <h1 className="dashboard-title">Good morning, <span className="text-gold">{user?.name?.split(' ')[0] || 'Student'}</span> 👋</h1>
+                                <p className="dashboard-subtitle">Here's what's happening with your job search today.</p>
+                            </div>
+                        )}
+                        {currentView === 'applications' && (
+                            <div>
+                                <h1 className="dashboard-title">Your <span className="text-gold">Applications</span></h1>
+                                <p className="dashboard-subtitle">Track the status of roles you've applied for.</p>
+                            </div>
+                        )}
+                        {currentView === 'saved' && (
+                            <div>
+                                <h1 className="dashboard-title">Saved <span className="text-gold">Jobs</span></h1>
+                                <p className="dashboard-subtitle">Opportunities you've bookmarked for later.</p>
+                            </div>
+                        )}
+                        {currentView === 'settings' && (
+                            <div>
+                                <h1 className="dashboard-title">Account <span className="text-gold">Settings</span></h1>
+                                <p className="dashboard-subtitle">Manage your profile and account preferences.</p>
+                            </div>
+                        )}
+                        <button className="btn btn-gold btn-sm" onClick={() => setUploadModal(true)}>
+                            <FiUpload size={14} /> Update Resume
+                        </button>
+                    </div>
+                )}
 
                 {isOverview && (
                     <>
@@ -487,6 +492,10 @@ const StudentDashboard = () => {
                             </button>
                         </div>
                     </motion.div>
+                )}
+
+                {currentView === 'chats' && (
+                    <ChatSection userRole="student" />
                 )}
             </main>
 

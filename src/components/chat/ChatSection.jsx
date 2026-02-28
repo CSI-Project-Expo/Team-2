@@ -86,7 +86,9 @@ const ChatSection = ({ userRole }) => {
                 <div className="chat-section-inbox">
                     <div className="chat-section-header">
                         <h2 className="dashboard-title" style={{ fontSize: '1.5rem', marginBottom: 0 }}>Messages</h2>
-                        <p className="dashboard-subtitle" style={{ marginBottom: 0 }}>Communicate with your accepted applicants.</p>
+                        <p className="dashboard-subtitle" style={{ marginBottom: 0 }}>
+                            {userRole === 'student' ? 'Communicate with recruiters for your accepted applications.' : 'Communicate with your accepted applicants.'}
+                        </p>
                     </div>
                     <div className="chat-section-list">
                         {loading ? (
@@ -147,11 +149,12 @@ const ChatSection = ({ userRole }) => {
                     <form className="chat-section-input-area" onSubmit={handleSendMessage}>
                         <input
                             type="text"
-                            placeholder="Type a message..."
+                            placeholder={userRole === 'student' && activeChat.messages.length === 0 ? "Waiting for the recruiter to send the first message..." : "Type a message..."}
                             value={messageInput}
                             onChange={(e) => setMessageInput(e.target.value)}
+                            disabled={userRole === 'student' && activeChat.messages.length === 0}
                         />
-                        <button type="submit" disabled={!messageInput.trim()} className="chat-section-send-btn" style={{ background: '#FFD700', color: '#000', borderRadius: '50%', width: 45, height: 45, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: 15, border: 'none', cursor: 'pointer' }}>
+                        <button type="submit" disabled={(!messageInput.trim()) || (userRole === 'student' && activeChat.messages.length === 0)} className="chat-section-send-btn" style={{ background: '#FFD700', color: '#000', borderRadius: '50%', width: 45, height: 45, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: 15, border: 'none', cursor: 'pointer', opacity: (userRole === 'student' && activeChat.messages.length === 0) ? 0.5 : 1 }}>
                             <FiSend size={20} />
                         </button>
                     </form>

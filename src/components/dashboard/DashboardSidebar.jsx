@@ -7,6 +7,7 @@ const studentNav = [
     { icon: <FiHome size={18} />, label: 'Overview', path: '/dashboard/student' },
     { icon: <FiBriefcase size={18} />, label: 'Applications', path: '/dashboard/student/applications' },
     { icon: <FiBookmark size={18} />, label: 'Saved Jobs', path: '/dashboard/student/saved' },
+    { icon: <FiMessageCircle size={18} />, label: 'Chats', path: '/dashboard/student#chats' },
     { icon: <FiSettings size={18} />, label: 'Settings', path: '/dashboard/student/settings' },
 ];
 

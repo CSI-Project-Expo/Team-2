@@ -174,9 +174,15 @@
 }
 
 .chat-section-bubble-row.mine .chat-section-bubble {
-    background: #FFD700;
+    background: #F4C430;
+    /* Premium gold */
     color: #000000;
     border-bottom-right-radius: 4px;
+}
+
+.chat-section-bubble-row.mine .chat-section-time {
+    color: #333333;
+    opacity: 0.8;
 }
 
 .chat-section-bubble-row.theirs .chat-section-bubble {
@@ -205,9 +211,9 @@
 
 .chat-section-input-area input {
     flex: 1;
-    background: rgba(0, 0, 0, 0.05);
+    background: #FFFFFF;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    color: inherit;
+    color: #000000;
     padding: 16px 20px;
     border-radius: 25px;
     outline: none;
@@ -215,7 +221,22 @@
     transition: all 0.2s;
 }
 
+.chat-section-input-area input::placeholder {
+    color: #888888;
+}
+
 .chat-section-input-area input:focus {
     border-color: rgba(212, 175, 55, 0.5);
-    background: rgba(0, 0, 0, 0.08);
+    background: #FFFFFF;
+}
+
+.chat-section-input-area input:disabled {
+    background: #FAFAFA;
+    color: #999999;
+    cursor: not-allowed;
+}
+
+.chat-section-send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed !important;
 }
