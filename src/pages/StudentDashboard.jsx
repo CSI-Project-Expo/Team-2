@@ -31,7 +31,7 @@ const StudentDashboard = () => {
     // Determine current view from pathname and hash
     const pathView = location.pathname.split('/').pop();
     const currentHash = location.hash;
-    const currentView = currentHash === '#chats' ? 'chats' : pathView;
+    const currentView = currentHash.startsWith('#chats') ? 'chats' : pathView;
     const isOverview = pathView === 'student' && currentView !== 'chats';
 
     const [applications, setApplications] = useState([]);
@@ -409,11 +409,11 @@ const StudentDashboard = () => {
                                         </span>
                                         {app.status === 'Shortlisted for in-person interview' && app.recruiterEmail && (
                                             <a
-                                                href={`mailto:${app.recruiterEmail}`}
+                                                href={`#chats?jobId=${app._id}`}
                                                 className="btn btn-outline-gold btn-sm"
                                                 style={{ display: 'block', marginTop: 8, fontSize: '0.8rem', padding: '4px 10px', width: 'fit-content', marginLeft: 'auto' }}
                                             >
-                                                <FiMail size={12} style={{ marginRight: 4 }} /> Contact Recruiter ({app.recruiterEmail})
+                                                <FiMail size={12} style={{ marginRight: 4 }} /> Connect with Recruiter
                                             </a>
                                         )}
                                         <div className="app-date" style={{ fontSize: '0.8rem', marginTop: '6px' }}>Applied on {app.date}</div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { FiSend, FiChevronLeft } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import './ChatSection.css';
@@ -9,6 +10,7 @@ const ChatSection = ({ userRole }) => {
     const [messageInput, setMessageInput] = useState('');
     const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef(null);
+    const location = useLocation();
 
     const fetchChats = async () => {
         setLoading(true);
@@ -32,7 +34,20 @@ const ChatSection = ({ userRole }) => {
 
     useEffect(() => {
         fetchChats();
-    }, []);
+    }, [location.hash]); // Refetch if hash changes to get latest active chat
+
+    useEffect(() => {
+        if (chats.length > 0) {
+            const hash = location.hash;
+            if (hash.includes('?jobId=')) {
+                const jobId = hash.split('?jobId=')[1];
+                const targetChat = chats.find(c => c.jobId && (c.jobId._id === jobId || c.jobId === jobId));
+                if (targetChat) {
+                    setActiveChat(targetChat);
+                }
+            }
+        }
+    }, [chats, location.hash]);
 
     // Scroll bottom
     const scrollToBottom = () => {
@@ -77,6 +92,7 @@ const ChatSection = ({ userRole }) => {
 
     const navigateToInbox = () => {
         setActiveChat(null);
+        window.history.pushState("", document.title, window.location.pathname + "#chats");
         fetchChats();
     };
 
