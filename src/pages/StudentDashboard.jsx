@@ -125,7 +125,7 @@ const StudentDashboard = () => {
 
     const ProfileItems = [
         { label: 'Basic Info', done: true },
-        { label: 'Resume Uploaded', done: !!user?.resumeUrl },
+        { label: 'Resume Uploaded', done: !!user?.resumeKey },
         { label: 'College Email Verified', done: true },
         { label: 'Skills Added', done: false },
         { label: 'LinkedIn Connected', done: false },
@@ -162,7 +162,7 @@ const StudentDashboard = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/upload', {
+            const res = await fetch('http://localhost:5000/api/resume/upload', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -175,7 +175,8 @@ const StudentDashboard = () => {
                 console.log('Resume uploaded successfully', data);
                 // Update local storage user info
                 if (user) {
-                    const updatedUser = { ...user, resumeUrl: data.resumeUrl };
+                    // The API now returns a resumeKey inside a data object, not a raw resumeUrl
+                    const updatedUser = { ...user, resumeKey: data.data.resumeKey };
                     localStorage.setItem('userInfo', JSON.stringify(updatedUser));
                     setUser(updatedUser);
                 }
@@ -363,16 +364,29 @@ const StudentDashboard = () => {
                                 >
                                     <FiUpload size={13} /> Upload / Update Resume
                                 </button>
-                                {user?.resumeUrl && (
-                                    <a
-                                        href={`http://localhost:5000${user.resumeUrl}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
+                                {user?.resumeKey && (
+                                    <button
                                         className="btn btn-outline-gold btn-sm"
-                                        style={{ width: '100%', justifyContent: 'center', marginTop: 10, display: 'flex' }}
+                                        style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 6, margin: '20px auto 0 auto' }}
+                                        onClick={async () => {
+                                            try {
+                                                const token = localStorage.getItem('token');
+                                                const res = await fetch(`http://localhost:5000/api/resume/${user._id}`, {
+                                                    headers: { Authorization: `Bearer ${token}` }
+                                                });
+                                                if (res.ok) {
+                                                    const data = await res.json();
+                                                    window.open(data.data.signedUrl, '_blank');
+                                                } else {
+                                                    toast.error('Could not fetch resume URL');
+                                                }
+                                            } catch (err) {
+                                                toast.error('Network error fetching resume URL');
+                                            }
+                                        }}
                                     >
-                                        <FiFileText size={13} style={{ marginRight: 6 }} /> View Current Resume
-                                    </a>
+                                        <FiFileText size={14} /> View Current Resume
+                                    </button>
                                 )}
                             </motion.div>
                         </div>

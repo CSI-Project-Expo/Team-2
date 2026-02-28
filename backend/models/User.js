@@ -25,6 +25,10 @@ const userSchema = mongoose.Schema(
             type: String, // Only for students
             default: '',
         },
+        resumeKey: {
+            type: String, // Wasabi S3 object key
+            default: '',
+        },
         resumeText: {
             type: String,
             default: '',

@@ -103,45 +103,20 @@ const getRecruiterJobs = async (req, res) => {
     try {
         const jobs = await Job.find({ recruiter: req.user._id }).populate({
             path: 'applicants.student',
-            select: 'name email resumeUrl resumeText cgpa',
+            select: 'name email resumeUrl resumeKey resumeText cgpa',
         });
 
-        // Calculate AI Score on the fly
+        // Use the saved AI Score from the database
         const jobsWithScores = jobs.map(job => {
-            const jobReqs = job.requirements || [];
-
             const applicantsWithScores = job.applicants.map(app => {
-                let aiScore = 40; // Base score
-                if (!app.student) {
-                    return { ...app.toObject(), aiScore: 0 };
+                const appObj = app.toObject();
+
+                // Fallback score if not saved
+                if (appObj.aiScore == null) {
+                    appObj.aiScore = 45;
                 }
 
-                const text = (app.student.resumeText || '').toLowerCase();
-
-                // Keyword match
-                if (jobReqs.length > 0) {
-                    let matchCount = 0;
-                    jobReqs.forEach(req => {
-                        if (text.includes(req.toLowerCase())) {
-                            matchCount++;
-                        }
-                    });
-                    aiScore += Math.min(40, (matchCount / jobReqs.length) * 40);
-                } else {
-                    aiScore += 20; // Default if no reqs
-                }
-
-                // CGPA bonus
-                const cgpa = app.student.cgpa || 0;
-                if (cgpa >= 9) aiScore += 20;
-                else if (cgpa >= 8) aiScore += 15;
-                else if (cgpa >= 7) aiScore += 10;
-                else if (cgpa >= 6) aiScore += 5;
-
-                return {
-                    ...app.toObject(),
-                    aiScore: Math.round(Math.min(100, aiScore))
-                };
+                return appObj;
             });
 
             // Sort by AI score descending, then by CGPA if score ties

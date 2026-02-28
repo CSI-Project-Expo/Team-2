@@ -176,7 +176,7 @@ const RecruiterDashboard = () => {
                     aiScore: app.aiScore || 45,
                     appliedAt: new Date(app.appliedAt).toLocaleDateString(),
                     resumeFileName: app.student?.name ? `${app.student.name.replace(/\s+/g, '_')}_Resume.pdf` : 'Candidate_Resume.pdf',
-                    resumeUrl: app.student?.resumeUrl ? `http://localhost:5000${app.student.resumeUrl.startsWith('/') ? '' : '/'}${app.student.resumeUrl}` : null,
+                    resumeKey: app.student?.resumeKey || null,
                 });
             });
         }
@@ -466,23 +466,36 @@ const RecruiterDashboard = () => {
                                         <div className="rd-actions">
                                             <button
                                                 className="rd-view-btn"
-                                                onClick={() => setViewingResume(app)}
+                                                onClick={async () => {
+                                                    // Immediately set the resume to view
+                                                    setViewingResume({ ...app, loadingResumeUrl: true });
+
+                                                    // Fetch the signed URL from the backend if a key exists
+                                                    if (app.studentId && app.resumeKey) {
+                                                        try {
+                                                            const token = localStorage.getItem('token');
+                                                            const res = await fetch(`http://localhost:5000/api/resume/${app.studentId}`, {
+                                                                headers: { Authorization: `Bearer ${token}` }
+                                                            });
+                                                            if (res.ok) {
+                                                                const data = await res.json();
+                                                                setViewingResume(prev => ({ ...prev, resumeUrl: data.data.signedUrl, loadingResumeUrl: false }));
+                                                            } else {
+                                                                setViewingResume(prev => ({ ...prev, loadingResumeUrl: false }));
+                                                            }
+                                                        } catch (err) {
+                                                            console.error("Failed to fetch signed URL:", err);
+                                                            setViewingResume(prev => ({ ...prev, loadingResumeUrl: false }));
+                                                        }
+                                                    } else {
+                                                        setViewingResume(prev => ({ ...prev, loadingResumeUrl: false }));
+                                                    }
+                                                }}
                                                 title="View Resume Details"
                                             >
                                                 <FiEye size={13} /> View
                                             </button>
-                                            {app.resumeUrl && (
-                                                <a
-                                                    href={app.resumeUrl}
-                                                    download={app.resumeFileName}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="rd-download-btn"
-                                                    title="Download Resume"
-                                                >
-                                                    <FiDownload size={13} />
-                                                </a>
-                                            )}
+                                            {/* Download button removed from here, since we don't have the signed URL yet. The View modal handles downloading. */}
                                         </div>
                                     </motion.div>
                                 ))}
@@ -624,7 +637,11 @@ const RecruiterDashboard = () => {
 
                             <div className="rd-viewer-actions" style={{ justifyContent: 'space-between', width: '100%', marginTop: 'auto', paddingTop: 20 }}>
                                 <div style={{ display: 'flex', gap: 10 }}>
-                                    {viewingResume.resumeUrl ? (
+                                    {viewingResume.loadingResumeUrl ? (
+                                        <div className="btn btn-gold btn-sm" style={{ opacity: 0.7 }}>
+                                            Loading...
+                                        </div>
+                                    ) : viewingResume.resumeUrl ? (
                                         <a
                                             href={viewingResume.resumeUrl}
                                             target="_blank"
@@ -638,7 +655,7 @@ const RecruiterDashboard = () => {
                                             <FiFileText size={14} /> Candidate hasn't uploaded a resume yet.
                                         </div>
                                     )}
-                                    {viewingResume.resumeUrl && (
+                                    {!viewingResume.loadingResumeUrl && viewingResume.resumeUrl && (
                                         <a
                                             href={viewingResume.resumeUrl}
                                             download={viewingResume.resumeFileName || 'Resume'}

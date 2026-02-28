@@ -69,6 +69,7 @@ const authUser = async (req, res) => {
                 email: user.email,
                 role: user.role,
                 resumeUrl: user.resumeUrl,
+                resumeKey: user.resumeKey,
                 token: generateToken(user._id),
             });
         } else {
@@ -177,6 +178,7 @@ const updateUserProfile = async (req, res) => {
                 email: updatedUser.email,
                 role: updatedUser.role,
                 resumeUrl: updatedUser.resumeUrl,
+                resumeKey: updatedUser.resumeKey,
                 token: generateToken(updatedUser._id),
                 message: 'Profile updated successfully'
             });
