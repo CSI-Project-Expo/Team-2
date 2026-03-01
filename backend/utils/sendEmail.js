@@ -1,10 +1,8 @@
-import nodemailer from 'nodemailer';
-
 const sendEmail = async (options) => {
-    // Development fallback: If credentials are not set, mock the email by logging it to the console
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    // Development fallback: If API key is not set, mock the email by logging it to the console
+    if (!process.env.BREVO_API_KEY) {
         console.log('\n==================================================');
-        console.log('📧 MOCK EMAIL DELIVERED (Missing SMTP Credentials in .env)');
+        console.log('📧 MOCK EMAIL DELIVERED (Missing BREVO_API_KEY in .env)');
         console.log(`To: ${options.email}`);
         console.log(`Subject: ${options.subject}`);
         console.log(`Message: \n${options.message}`);
@@ -12,25 +10,25 @@ const sendEmail = async (options) => {
         return;
     }
 
-    // 1. Create a transporter
-    const transporter = nodemailer.createTransport({
-        service: 'gmail', // Use gmail or preferred SMTP service
-        auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS, // App password
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+            'accept': 'application/json',
+            'api-key': process.env.BREVO_API_KEY,
+            'content-type': 'application/json',
         },
+        body: JSON.stringify({
+            sender: { name: 'HireSphere', email: process.env.BREVO_SENDER_EMAIL },
+            to: [{ email: options.email }],
+            subject: options.subject,
+            textContent: options.message,
+        }),
     });
 
-    // 2. Define email options
-    const mailOptions = {
-        from: `HireSphere <${process.env.SMTP_USER}>`,
-        to: options.email,
-        subject: options.subject,
-        text: options.message,
-    };
-
-    // 3. Send email
-    await transporter.sendMail(mailOptions);
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message || 'Failed to send email via Brevo');
+    }
 };
 
 export default sendEmail;
