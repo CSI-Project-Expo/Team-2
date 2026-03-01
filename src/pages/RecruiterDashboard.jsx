@@ -52,7 +52,7 @@ const RecruiterDashboard = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/auth/profile', {
+            const res = await fetch('https://team-2-m0tb.onrender.com/api/auth/profile', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ const RecruiterDashboard = () => {
             try {
                 const token = localStorage.getItem('token');
                 const headers = token ? { Authorization: `Bearer ${token}` } : {};
-                const res = await fetch('http://localhost:5000/api/jobs/recruiter', { headers });
+                const res = await fetch('https://team-2-m0tb.onrender.com/api/jobs/recruiter', { headers });
                 if (res.ok) {
                     const data = await res.json();
                     setFetchedJobs(data);
@@ -129,7 +129,7 @@ const RecruiterDashboard = () => {
     const handlePostJob = async (job) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/jobs', {
+            const res = await fetch('https://team-2-m0tb.onrender.com/api/jobs', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -205,7 +205,7 @@ const RecruiterDashboard = () => {
         if (!window.confirm('Are you sure you want to delete this job?')) return;
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:5000/api/jobs/${id}`, {
+            const res = await fetch(`https://team-2-m0tb.onrender.com/api/jobs/${id}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -225,7 +225,7 @@ const RecruiterDashboard = () => {
     const handleUpdateStatus = async (app, status) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:5000/api/jobs/${app.jobId}/applicants/${app.studentId}/status`, {
+            const res = await fetch(`https://team-2-m0tb.onrender.com/api/jobs/${app.jobId}/applicants/${app.studentId}/status`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -474,7 +474,7 @@ const RecruiterDashboard = () => {
                                                     if (app.studentId && app.resumeKey) {
                                                         try {
                                                             const token = localStorage.getItem('token');
-                                                            const res = await fetch(`http://localhost:5000/api/resume/${app.studentId}`, {
+                                                            const res = await fetch(`https://team-2-m0tb.onrender.com/api/resume/${app.studentId}`, {
                                                                 headers: { Authorization: `Bearer ${token}` }
                                                             });
                                                             if (res.ok) {

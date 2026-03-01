@@ -52,7 +52,7 @@ const StudentDashboard = () => {
             try {
                 const token = localStorage.getItem('token');
                 const headers = token ? { Authorization: `Bearer ${token}` } : {};
-                const res = await fetch('http://localhost:5000/api/jobs/student/applications', { headers });
+                const res = await fetch('https://team-2-m0tb.onrender.com/api/jobs/student/applications', { headers });
                 if (res.ok) {
                     const data = await res.json();
                     setApplications(data);
@@ -64,7 +64,7 @@ const StudentDashboard = () => {
 
         const fetchJobs = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/jobs');
+                const res = await fetch('https://team-2-m0tb.onrender.com/api/jobs');
                 const data = await res.json();
                 setFetchedJobs(data);
             } catch (err) {
@@ -98,7 +98,7 @@ const StudentDashboard = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/auth/profile', {
+            const res = await fetch('https://team-2-m0tb.onrender.com/api/auth/profile', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -162,7 +162,7 @@ const StudentDashboard = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/resume/upload', {
+            const res = await fetch('https://team-2-m0tb.onrender.com/api/resume/upload', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -371,7 +371,7 @@ const StudentDashboard = () => {
                                         onClick={async () => {
                                             try {
                                                 const token = localStorage.getItem('token');
-                                                const res = await fetch(`http://localhost:5000/api/resume/${user._id}`, {
+                                                const res = await fetch(`https://team-2-m0tb.onrender.com/api/resume/${user._id}`, {
                                                     headers: { Authorization: `Bearer ${token}` }
                                                 });
                                                 if (res.ok) {

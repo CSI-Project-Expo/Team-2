@@ -91,7 +91,7 @@ const RegisterPage = () => {
             setLoading(true);
             try {
                 const payloadEmail = formData.companyEmail;
-                const res = await fetch('http://localhost:5000/api/auth/send-otp', {
+                const res = await fetch('https://team-2-m0tb.onrender.com/api/auth/send-otp', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: payloadEmail }),
@@ -163,7 +163,7 @@ const RegisterPage = () => {
         setLoading(true);
         try {
             const payloadEmail = formData.companyEmail;
-            const res = await fetch('http://localhost:5000/api/auth/send-otp', {
+            const res = await fetch('https://team-2-m0tb.onrender.com/api/auth/send-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: payloadEmail }),
@@ -194,7 +194,7 @@ const RegisterPage = () => {
                 payload.otp = enteredOtp;
             }
 
-            const res = await fetch('http://localhost:5000/api/auth/register', {
+            const res = await fetch('https://team-2-m0tb.onrender.com/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)

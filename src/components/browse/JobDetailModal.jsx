@@ -61,7 +61,7 @@ const JobDetailModal = ({ job, onClose }) => {
             uploadFormData.append('cgpa', cgpa); // Must append text fields before files for Multer
             uploadFormData.append('resume', resumeFile);
 
-            const uploadRes = await fetch('http://localhost:5000/api/resume/upload', {
+            const uploadRes = await fetch('https://team-2-m0tb.onrender.com/api/resume/upload', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${token}` },
                 body: uploadFormData
@@ -75,7 +75,7 @@ const JobDetailModal = ({ job, onClose }) => {
             }
 
             // Then apply to the job
-            const res = await fetch(`http://localhost:5000/api/jobs/${job.id}/apply`, {
+            const res = await fetch(`https://team-2-m0tb.onrender.com/api/jobs/${job.id}/apply`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

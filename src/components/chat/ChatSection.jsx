@@ -16,7 +16,7 @@ const ChatSection = ({ userRole }) => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/chats', {
+            const res = await fetch('https://team-2-m0tb.onrender.com/api/chats', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
@@ -66,7 +66,7 @@ const ChatSection = ({ userRole }) => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:5000/api/chats/${activeChat._id}/messages`, {
+            const res = await fetch(`https://team-2-m0tb.onrender.com/api/chats/${activeChat._id}/messages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

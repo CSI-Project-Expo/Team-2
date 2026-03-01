@@ -23,7 +23,7 @@ const JobsPage = () => {
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/jobs');
+                const res = await fetch('https://team-2-m0tb.onrender.com/api/jobs');
                 const data = await res.json();
 
                 // Map backend jobs to match the format of mockJobs
